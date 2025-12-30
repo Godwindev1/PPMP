@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Verify Your Email";
+}
+
+<div style="text-align:center; margin-top:50px;">
+    @if(!ViewBag.IsConfirmed)
+    {
+        <h1>📧 @ViewBag.Message</h1>
+        <p>Thank you for registering! A verification email has been sent to your inbox.</p>
+        <p>Please click the link in the email to confirm your account.</p>
+        
+        <p>If you don't see the email, check your spam/junk folder.</p>
+
+    }
+    else
+    {
+        <h1>📧 @ViewBag.Message</h1>
+    }
+   
+    <a href="/" style="
+        display:inline-block;
+        padding:10px 20px;
+        background-color:#3B4CB8;
+        color:white;
+        text-decoration:none;
+        border-radius:5px;
+        margin-top:20px;">
+        Go to Home
+    </a>
+
+    <a href='ResendVerification?email={model.Email}' 
+    style='color: #3B4CB8; text-decoration: underline ' >resend email</a>
+</div>

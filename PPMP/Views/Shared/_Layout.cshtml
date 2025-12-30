@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="h-screen w-screen">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PPMP</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PPMP.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    
+
+</head>
+
+<body class="h-full flex flex-col bg-white">
+    <header class="w-full shadow-sm  bg-white">
+        <nav class="w-full max-w-8xl mx-auto px-4 py-2 flex items-center">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="inline-flex items-center">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="18" fill="#2563EB" />
+                    <text x="20" y="26"
+                          font-family="Aptos, system-ui, -apple-system, sans-serif"
+                          font-size="24"
+                          font-weight="700"
+                          text-anchor="middle"
+                          fill="white">
+                        P
+                    </text>
+                </svg>
+            </a>
+        </nav>
+    </header>
+
+    <main role="main" class="w-full h-full">
+        @RenderBody()
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

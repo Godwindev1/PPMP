@@ -1,0 +1,86 @@
+﻿@model RegisterViewModel
+
+<section class="w-full h-full flex justify-center items-center " >
+    <div class="h-full w-[25%]  min-w-[23rem] max-w-[25rem] min-h-[30%] max-h-[75%] gap-[2.3rem] flex justify-start items-start flex-col  p-2 ">
+        
+        <h2 class="w-full items-start justify-start flex text-[25px] font-[500] tracking-normal " > Create your account </h2>
+        <form asp-action="RegisterModel" method="post" novalidate class="gap-5 text-1xl w-full h-auto flex flex-col justify-center items-center  font-thin">
+            <div class = "w-full h-auto flex flex-col gap-1 justify-start items-start">
+                <label asp-for="Username" class="w-full h-auto"></label>
+
+                <div class="relative w-full h-auto">
+                    <input asp-for="Username" placeholder="Enter your name " class=" placeholder:text-[#817d7dca] pl-[43px] not-visited:bg-[#c7c4c417] icon-input h-auto w-full text1x1 p-2 shadow-[0_0_2px_0_rgb(0_0_0/0.05)]/20 rounded-lg transition-all duration-200 hover:outline-0  focus-visible:outline-0 focus-visible:shadow-[0_0_3px_1px_rgb(0_0_0/0.05)]/20" />
+                    <img src="~/images/user.svg" alt="", class=" w-[20px] h-[20px] absolute left-[10px] top-1/2 transform-[translateY(-50%)] pointer-events-none">
+                </div>
+
+                <span asp-validation-for="Username" class="w-full h-auto text-[15px] font-thin p-0 text-red-600"></span>
+            </div>
+
+            <div class = "w-full h-auto flex flex-col gap-1 justify-start items-start">
+                <label asp-for="Email" class="w-full h-auto"></label>   
+                
+                <div class="relative w-full h-auto">
+                    @if(ViewData["ReadyEmail"] != null && (bool)ViewData["ReadyEmail"])
+                    {
+                        <input asp-for="Email" placeholder="Enter your Email " value="@ViewBag.Email" class=" placeholder:text-[#817d7dca] pl-[43px] not-visited:bg-[#c7c4c417] icon-input h-auto w-full text1x1 p-2 shadow-[0_0_2px_0_rgb(0_0_0/0.05)]/20 rounded-lg transition-all duration-200 hover:outline-0  focus-visible:outline-0 focus-visible:shadow-[0_0_3px_1px_rgb(0_0_0/0.05)]/20" />
+                    }
+                    else
+                    {
+                        <input asp-for="Email" placeholder="Enter your Email " class=" placeholder:text-[#817d7dca] pl-[43px] not-visited:bg-[#c7c4c417] icon-input h-auto w-full text1x1 p-2 shadow-[0_0_2px_0_rgb(0_0_0/0.05)]/20 rounded-lg transition-all duration-200 hover:outline-0  focus-visible:outline-0 focus-visible:shadow-[0_0_3px_1px_rgb(0_0_0/0.05)]/20" />
+                    }
+                   
+                    <img src="~/images/mail.svg" alt="", class=" w-[20px] h-[20px] absolute left-[10px] top-1/2 transform-[translateY(-50%)] pointer-events-none">
+                </div>
+
+                <span asp-validation-for="Email" class="w-full h-auto text-[15px] font-thin p-0 text-red-600"></span>
+            </div>
+
+            <div class = "w-full h-auto flex flex-col gap-1 justify-start items-start">
+                <label asp-for="Password" class="w-full h-auto"></label>
+ 
+                <div class="relative w-full h-auto">
+                    <input asp-for="Password" placeholder="Enter your Password " type="password" class=" placeholder:text-[#817d7dca] pl-[43px] not-visited:bg-[#c7c4c417] icon-input h-auto w-full text1x1 p-2 shadow-[0_0_2px_0_rgb(0_0_0/0.05)]/20 rounded-lg transition-all duration-200 hover:outline-0  focus-visible:outline-0 focus-visible:shadow-[0_0_3px_1px_rgb(0_0_0/0.05)]/20" />
+                    <img src="~/images/lock.svg" alt="", class=" w-[20px] h-[20px] absolute left-[10px] top-1/2 transform-[translateY(-50%)] pointer-events-none">
+                </div>
+
+                <span asp-validation-for="Password" class="w-full h-auto text-[15px] font-thin p-0 text-red-600"></span>
+            </div>
+
+            <div class="text-danger w-full h-auto text-[15px] font-thin p-0 text-red-600 self-start">
+                @Html.ValidationSummary()
+            </div>
+            
+            <button class="w-full h-[3rem] rounded-lg
+                bg-blue-700 flex justify-center items-center text-[15px]
+                text-white hover:bg-[#155efce7] hover:cursor-pointer" type="submit">
+                Register
+             </button>
+
+        </form>
+
+        <div class=" w-full h-auto flex justify-center items-center font-semibold text-[14px] text-gray-400 tracking-normal ">
+            <div class=" grow-4 bg-gray-400 h-[1px]">  </div>
+            <span class="grow-[5] flex justify-center items-center">Or Continue With</span>
+            <div class="grow-4 bg-gray-400 h-[1px]">  </div>
+        </div>
+
+                    <!-- View -->
+        <form asp-controller="Home" asp-action="Increment" class=" hover:cursor-pointer h-auto w-full flex justify-center items-center rounded-lg p-2 shadow-[0_0_3px_0_rgb(0_0_0/0.05)]/20">
+                <button type="submit" class="flex gap-2.5 justify-center items-center hover:cursor-pointer ">
+                    <img src="~/images/google.png" alt="" class="w-[1.0rem] h-[1.0rem] flex justify-center items-center">
+                    <p class="font-medium hover:cursor-pointer text-1xl">Login With Google</p> 
+                </button>
+        </form>
+
+        <p class="text-[14px] font-medium w-full h-auto flex gap-1 justify-center items-center"> 
+            Already Have An Account? 
+            <span>
+                <a href= "~/Account/Login"  class="text-blue-900 hover:underline flex justify-center items-center "> Login <img src="~/images/arrow.svg" alt="" class="h-[12px] w-[12px] hover:underline"> </a>
+            <span/>
+        </p>
+
+    </div>
+</section>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

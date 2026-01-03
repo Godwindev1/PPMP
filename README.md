@@ -140,3 +140,8 @@ docker-compose -f docker-compose.prod.yml up -d
 - Verify Node.js version: `node --version`
 - Reinstall dependencies: `npm install`
 - Check `tailwind.config.js` configuration
+
+
+📄 License
+This project is open source and available under the MIT License.
+

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using PPMP.Data;
 using PPMP.Models;
@@ -154,6 +155,11 @@ namespace PPMP.Controllers
         [HttpGet("WaitForEmailVerification")]
         public async Task<ActionResult> WaitForEmailVerification([FromQuery]string email)
         {
+            if(!ModelState.IsValid)
+            {
+                return View("error");
+            }
+
             try
             {
                 if( (await userManager.FindByEmailAsync(email)).EmailConfirmed)
@@ -229,6 +235,92 @@ namespace PPMP.Controllers
 
             return View("ConfirmEmailFailed");
         }
+
+        [HttpGet("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromQuery]string? Email)
+        {
+            if(Email == null)
+            {
+                ViewData["IsEmailNull"] = true;
+            }
+            else
+            {
+                ViewData["IsEmailNull"] = false;
+                ViewData["Email"] = Email;
+            }
+
+            return View("ForgotPassword");
+        }
+
+
+        [HttpPost(template: "SendPasswordReset",  Name = "PasswordRequest")]
+        public async Task<IActionResult> SendPasswordResetToken(ForgotPasswordModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                
+                if(user == null)
+                {
+                    return View("ResetPasswordLink");    
+                }
+
+               var token  =  await userManager.GeneratePasswordResetTokenAsync(user);
+                 
+               var baseUrl = Url.RouteUrl(
+                    routeName: "ResetPassword",
+                    values: new { },
+                    protocol: HttpContext.Request.Scheme
+                );
+
+                var ResetLink =
+                    $"{baseUrl}?userId={WebUtility.UrlEncode(user.Id)}&token={WebUtility.UrlEncode(token)}";
+
+                  emailService.SendLinkEmail(
+                    to: user.Email,
+                    subject: "Password Reset",
+                    message: "Reset Your Password by clicking the button below:",
+                    buttonText: "Reset",
+                    linkUrl: ResetLink
+                );
+
+                return View("ResetPasswordLink");
+            }
+
+            ModelState.AddModelError("", "invalid ");
+            return View("ResetPasswordLink");
+        }
+
+        [HttpGet(template:"ResetPassword", Name = "ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromQuery]string userId, [FromQuery]string token)
+        {
+            ViewBag.userID = userId;
+            ViewBag.token = token;
+
+            return View("ResetPassword");
+        }
+
+        [HttpPost("UpdatePassword", Name = "UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword(ResetPasswordViewModel resetPasswordViewModel)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View("ResetPasswordFailed");
+            }
+
+            var user = await  userManager.FindByIdAsync(resetPasswordViewModel.UserID);
+            var result = await userManager.ResetPasswordAsync(user, resetPasswordViewModel.token, resetPasswordViewModel.Password);
+
+            if(result.Succeeded)
+            {
+                return View("ResetPasswordSucces");
+            }
+            else
+            {
+                return View("ResetPasswordFailed");
+            }
+        }
+
 
     }
 }

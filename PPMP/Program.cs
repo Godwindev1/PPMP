@@ -37,6 +37,15 @@ namespace PPMP
             .AddEntityFrameworkStores<UserDBContext>()
             .AddDefaultTokenProviders();
 
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>            
+            o.TokenLifespan = TimeSpan.FromMinutes(10));
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromDays(30); 
+                options.SlidingExpiration = true; 
+            });
+
             builder.Services.AddScoped<ClientRepo>();
 
 

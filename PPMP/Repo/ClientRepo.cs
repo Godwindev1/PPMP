@@ -47,7 +47,7 @@ namespace PPMP.Repo
             return client; 
         }
 
-        public async Task<bool> SetPassword(Client client, string Password)
+        public async Task<bool> SetPasswordAsync(Client client, string Password)
         {
             if(await _context.Clients.FirstOrDefaultAsync(x => x.Id == client.Id) == null)
             {
@@ -60,34 +60,77 @@ namespace PPMP.Repo
             client.PasswordHash = PasswordHash;
             client.HasPassword = true;
             _context.Clients.Update(client);
-
+            await _context.SaveChangesAsync();
+            
             return true;
         }
 
-        public async Task<bool> SignInPassword(Client client, string Password)
+        public async Task<ClientSigninResult> SignInPasswordAsync(Client client, string Password, bool RememberMe)
         {
-            if(await _context.Clients.FirstOrDefaultAsync(x => x.Id == client.Id) == null)
+            if(await FindByIdAsync(client.Id.ToString()) == null)
             {
-                return false;
+                return new ClientSigninResult { 
+                    Succeeded = false,
+                    IsNotAllowed = false,
+                    PasswordNotSet = false,
+                    RequiresTwoFactor = false
+                };
             }
 
             if(_httpContext.HttpContext == null)
             {
-                return false;
+                return new ClientSigninResult { 
+                    Succeeded = false,
+                    IsNotAllowed = false,
+                    PasswordNotSet = false,
+                    RequiresTwoFactor = false
+                };
+            }
+
+            if(!client.HasPassword)
+            {
+                return new ClientSigninResult { 
+                    Succeeded = false,
+                    IsNotAllowed = false,
+                    PasswordNotSet = true,
+                    RequiresTwoFactor = false
+                };
+            }
+
+
+            var entry = _context.Entry(client);
+
+            if (entry.State == EntityState.Detached)
+            {
+                _context.Attach(client);
             }
 
             await _context.Entry(client)
-                    .Reference(x => x.clientRole)
-                    .Query()
-                    .Include(x => x.Role)
-                    .LoadAsync();
+                  .Reference(x => x.clientRole)
+                  .Query()
+                  .Include(x => x.Role)
+                  .LoadAsync();
 
             var passwordHasher = new PasswordHasher<Client>();
-            passwordHasher.VerifyHashedPassword(client, client.PasswordHash, Password);
+            var Result = passwordHasher.VerifyHashedPassword(client, client.PasswordHash, Password);
+
+            if(Result == PasswordVerificationResult.Failed)
+            {
+                  return new ClientSigninResult { 
+                    Succeeded = false,
+                    IsNotAllowed = false,
+                    PasswordNotSet = false,
+                    RequiresTwoFactor = false
+                };
+            }
+            else if(Result == PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                await SetPasswordAsync(client, Password);
+            }
 
             ClaimsPrincipal ClientAuth = new ClaimsPrincipal();
             ClaimsIdentity identity = new ClaimsIdentity(new List<Claim>(),
-                                             CookieAuthenticationDefaults.AuthenticationScheme
+                                            CookieAuthenticationDefaults.AuthenticationScheme
                                             ,ClaimTypes.Name, ClaimTypes.Role);
 
             identity.AddClaim(new Claim(identity.RoleClaimType, client.clientRole.Role.NormalizedName));
@@ -95,14 +138,33 @@ namespace PPMP.Repo
 
             ClientAuth.AddIdentity(identity);
 
-            await _httpContext.HttpContext.SignInAsync(ClientAuth);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = RememberMe,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30),
+                AllowRefresh = true
+            };
+
+            await _httpContext.HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, ClientAuth, authProperties);
 
             if(_httpContext.HttpContext.User.Identity.IsAuthenticated)
             {
-                return true;
+                return new ClientSigninResult { 
+                    Succeeded = true,
+                    IsNotAllowed = false,
+                    PasswordNotSet = false,
+                    RequiresTwoFactor = false
+                };
             }
-
-            return false;
+            else
+            {
+                  return new ClientSigninResult { 
+                    Succeeded = false,
+                    IsNotAllowed = false,
+                    PasswordNotSet = false,
+                    RequiresTwoFactor = false
+                };
+            }
         }
 
 

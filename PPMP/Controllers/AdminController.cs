@@ -14,10 +14,12 @@ namespace PPMP.Controllers
     {
         private readonly ClientRepo _clientManager;
         private readonly UserManager<User> _userManager;
-        public AdminController(ClientRepo clientRepo,  UserManager<User> userManager)
+        private readonly RoleManager<Role> _roleManger;
+        public AdminController(ClientRepo clientRepo,  UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             _clientManager = clientRepo;
             _userManager = userManager;
+            _roleManger = roleManager;
         }
 
         [HttpGet("Admin")]
@@ -29,10 +31,25 @@ namespace PPMP.Controllers
         [HttpPost("Admin/AddClient")]
         public async Task<IActionResult> CreateUser([FromForm]ClientViewModel clientDto)
         {
+            var Role = await _roleManger.FindByNameAsync("Client");
+
+            if(Role == null)
+            {
+                await _roleManger.CreateAsync(new Role { Name = "Client", NormalizedName = "CLIENT" });
+
+                Role = await _roleManger.FindByNameAsync("Client");
+
+                if(Role != null)
+                {
+                    await _roleManger.AddClaimAsync(Role, new Claim(ClaimTypes.Role, Role.NormalizedName ?? "Client"));
+                }
+            }
+
             Client client = new Client{ 
                 Name = clientDto.Name,
                 StartDate = clientDto.StartDate,
                 EndDate = clientDto.EndDate,
+                HasPassword = false
             };
 
             var Claim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
@@ -41,6 +58,7 @@ namespace PPMP.Controllers
             if(Developer != null)
             {
                 await _clientManager.CreateAsync(client, Developer);
+                await _clientManager.AddToRoleAsync(client, "Client");
             }
 
             return Redirect("~/");

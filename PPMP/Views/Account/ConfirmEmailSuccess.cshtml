@@ -2,16 +2,20 @@
     ViewData["Title"] = "Email Confirmed";
 }
 
-<div style="text-align:center; margin-top:50px;">
-    <h1>✅ Email Confirmed Successfully!</h1>
-    <p>Thank you! Your email has been verified.</p>
-    <a href="/" style="
-        display:inline-block;
-        padding:10px 20px;
-        background-color:#3B4CB8;
-        color:white;
-        text-decoration:none;
-        border-radius:5px;">
-        Go to Home
-    </a>
-</div>
+<section class="w-full h-full flex flex-col justify-center items-center bg-generic bg-cover bg-center">
+  <section class="w-full flex flex-col justify-center items-center gap-[0.2rem]">
+        <h1 class="w-full items-center justify-center flex text-[35px] font-[600] tracking-normal"> Email Confirmed Successfully! </h1>
+        <p>Thank you! Your email has been verified.</p>
+        <img src="~/images/verified_.jpg" class="h-[10rem] w-[10rem] flex mt-[10px]" />
+    </section>
+    
+   
+   <div class="w-full flex flex-col justify-center items-center gap-[1rem]">
+        <a href="/" 
+            class="hover:bg-[#3b4cb8e7] bg-[#3B4CB8] pb-2.5 pt-2.5 pl-5 pr-5 inline-block text-white rounded-[5px] mt-[20px]"
+            >
+            Go to Home
+        </a>
+        
+    </div>
+</section>

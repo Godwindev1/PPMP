@@ -12,7 +12,7 @@ using PPMP.Data;
 namespace PPMP.Migrations
 {
     [DbContext(typeof(UserDBContext))]
-    [Migration("20251230145913_mydb")]
+    [Migration("20260103115627_mydb")]
     partial class mydb
     {
         /// <inheritdoc />
@@ -24,6 +24,48 @@ namespace PPMP.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("Comment", b =>
+                {
+                    b.Property<Guid>("CommentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("AuthorClientID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("AuthorDeveloperID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DeveloperId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("ProjectID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("clientId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("CommentID");
+
+                    b.HasIndex("DeveloperId");
+
+                    b.HasIndex("ProjectID");
+
+                    b.HasIndex("clientId");
+
+                    b.ToTable("Comment");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
@@ -148,11 +190,12 @@ namespace PPMP.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("EndDateOriginalTimeZone")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool?>("HasPassword")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<bool>("HasPassword")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTimeOffset?>("LastAccessedAt")
                         .HasColumnType("datetime(6)");
@@ -168,7 +211,6 @@ namespace PPMP.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("StartDateOriginalTimeZone")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -289,6 +331,158 @@ namespace PPMP.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Project", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ClientID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("CurrentStateTagID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DeveloperID")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("PrimaryGoal")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ClientID");
+
+                    b.HasIndex("CurrentStateTagID");
+
+                    b.HasIndex("DeveloperID");
+
+                    b.ToTable("projects");
+                });
+
+            modelBuilder.Entity("ProjectModification", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Goal")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ModDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("ProjectID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("SubGoalAnchorID")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProjectID");
+
+                    b.HasIndex("SubGoalAnchorID");
+
+                    b.ToTable("projectModifications");
+                });
+
+            modelBuilder.Entity("SessionPage", b =>
+                {
+                    b.Property<Guid>("SessionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("CLientID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("DeveloperID")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("SessionID");
+
+                    b.HasIndex("CLientID")
+                        .IsUnique();
+
+                    b.HasIndex("DeveloperID");
+
+                    b.ToTable("Sessions");
+                });
+
+            modelBuilder.Entity("StateTag", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("HexColor")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TagName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("stateTags");
+                });
+
+            modelBuilder.Entity("Subgoal", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("ProjectID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("StateTagID")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProjectID");
+
+                    b.HasIndex("StateTagID");
+
+                    b.ToTable("subgoals");
+                });
+
+            modelBuilder.Entity("Comment", b =>
+                {
+                    b.HasOne("PPMP.Data.User", "Developer")
+                        .WithMany("Comments")
+                        .HasForeignKey("DeveloperId");
+
+                    b.HasOne("Project", "project")
+                        .WithMany("Comments")
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPMP.Data.Client", "client")
+                        .WithMany("Comments")
+                        .HasForeignKey("clientId");
+
+                    b.Navigation("Developer");
+
+                    b.Navigation("client");
+
+                    b.Navigation("project");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("PPMP.Data.Role", null)
@@ -370,10 +564,96 @@ namespace PPMP.Migrations
                     b.Navigation("client");
                 });
 
+            modelBuilder.Entity("Project", b =>
+                {
+                    b.HasOne("PPMP.Data.Client", "client")
+                        .WithMany("projects")
+                        .HasForeignKey("ClientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StateTag", "State")
+                        .WithMany("projects")
+                        .HasForeignKey("CurrentStateTagID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPMP.Data.User", "Developer")
+                        .WithMany("projects")
+                        .HasForeignKey("DeveloperID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Developer");
+
+                    b.Navigation("State");
+
+                    b.Navigation("client");
+                });
+
+            modelBuilder.Entity("ProjectModification", b =>
+                {
+                    b.HasOne("Project", "project")
+                        .WithMany("projectModifications")
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Subgoal", "subgoal")
+                        .WithMany("modifications")
+                        .HasForeignKey("SubGoalAnchorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("project");
+
+                    b.Navigation("subgoal");
+                });
+
+            modelBuilder.Entity("SessionPage", b =>
+                {
+                    b.HasOne("PPMP.Data.Client", "client")
+                        .WithOne("Session")
+                        .HasForeignKey("SessionPage", "CLientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPMP.Data.User", "Developer")
+                        .WithMany("Sessions")
+                        .HasForeignKey("DeveloperID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Developer");
+
+                    b.Navigation("client");
+                });
+
+            modelBuilder.Entity("Subgoal", b =>
+                {
+                    b.HasOne("Project", "project")
+                        .WithMany("subgoals")
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StateTag", null)
+                        .WithMany("subgoals")
+                        .HasForeignKey("StateTagID");
+
+                    b.Navigation("project");
+                });
+
             modelBuilder.Entity("PPMP.Data.Client", b =>
                 {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Session");
+
                     b.Navigation("clientRole")
                         .IsRequired();
+
+                    b.Navigation("projects");
                 });
 
             modelBuilder.Entity("PPMP.Data.Role", b =>
@@ -384,6 +664,33 @@ namespace PPMP.Migrations
             modelBuilder.Entity("PPMP.Data.User", b =>
                 {
                     b.Navigation("Clients");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("Sessions");
+
+                    b.Navigation("projects");
+                });
+
+            modelBuilder.Entity("Project", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("projectModifications");
+
+                    b.Navigation("subgoals");
+                });
+
+            modelBuilder.Entity("StateTag", b =>
+                {
+                    b.Navigation("projects");
+
+                    b.Navigation("subgoals");
+                });
+
+            modelBuilder.Entity("Subgoal", b =>
+                {
+                    b.Navigation("modifications");
                 });
 #pragma warning restore 612, 618
         }

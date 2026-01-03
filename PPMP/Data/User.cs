@@ -7,6 +7,11 @@ namespace PPMP.Data
     {
         public List<Client> Clients { get; set; }
         public Guid GuestID { get; set; }
-        
+
+        //NAVIGATIONS
+        public List<Project>? projects {get; set; }
+        public List<Comment>? Comments {get; set; }
+        public List<SessionPage>? Sessions {get; set; }
+
     }
 }

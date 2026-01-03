@@ -2,32 +2,40 @@
     ViewData["Title"] = "Verify Your Email";
 }
 
-<div style="text-align:center; margin-top:50px;">
+<div style="text-align:center;" class="h-full w-full flex flex-col justify-center items-center bg-generic bg-cover bg-center">
     @if(!ViewBag.IsConfirmed)
     {
-        <h1>📧 @ViewBag.Message</h1>
-        <p>Thank you for registering! A verification email has been sent to your inbox.</p>
-        <p>Please click the link in the email to confirm your account.</p>
-        
-        <p>If you don't see the email, check your spam/junk folder.</p>
-
+        <section class=" w-full flex flex-col justify-center items-center gap-[3rem]">
+            <h1 class="w-full items-center justify-center flex text-[35px] font-[600] tracking-normal"> @ViewBag.Message</h1>
+            <img src="~/images/mail_.png" class="h-[10rem] w-[10rem] flex" />
+            <p>
+                Thank you for registering! A verification email has been sent to your inbox. <br/>
+                Please click the link in the email to confirm your account. <br/>
+                If you don't see the email, check your spam/junk folder. <br/>
+            </p>
+        </section>
     }
     else
     {
-        <h1>📧 @ViewBag.Message</h1>
+        <section class="w-full flex flex-col justify-center items-center gap-[3rem]">
+            <h1 class="w-full items-center justify-center flex text-[35px] font-[600] tracking-normal"> @ViewBag.Message</h1>
+            <img src="~/images/verified_.jpg" class="h-[10rem] w-[10rem] flex" />
+        </section>
     }
    
-    <a href="/" style="
-        display:inline-block;
-        padding:10px 20px;
-        background-color:#3B4CB8;
-        color:white;
-        text-decoration:none;
-        border-radius:5px;
-        margin-top:20px;">
-        Go to Home
-    </a>
+   <div class="w-full flex flex-col justify-center items-center gap-[1rem]">
 
-    <a href='ResendVerification?email={model.Email}' 
-    style='color: #3B4CB8; text-decoration: underline ' >resend email</a>
+        <a href="/" 
+            class="hover:bg-[#3b4cb8e7] bg-[#3B4CB8] pb-2.5 pt-2.5 pl-5 pr-5 inline-block text-white rounded-[5px] mt-[20px]"
+            >
+            Go to Home
+        </a>
+
+         @if(!ViewBag.IsConfirmed){
+            <a href='ResendVerification?email={model.Email}' 
+            style='color: #3B4CB8; text-decoration: underline ' >resend email</a>
+         }
+        
+    </div>
+
 </div>

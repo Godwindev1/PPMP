@@ -12,26 +12,47 @@
 
 </head>
 
-<body class="h-full flex flex-col bg-white">
+<body class="h-full flex flex-col bg-white ">
     <header class="w-full shadow-sm  bg-white">
-        <nav class="w-full max-w-8xl mx-auto px-4 py-2 flex items-center">
-            <a asp-area="" asp-controller="Home" asp-action="Index" class="inline-flex items-center">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="20" cy="20" r="18" fill="#2563EB" />
-                    <text x="20" y="26"
-                          font-family="Aptos, system-ui, -apple-system, sans-serif"
-                          font-size="24"
-                          font-weight="700"
-                          text-anchor="middle"
-                          fill="white">
-                        P
-                    </text>
-                </svg>
-            </a>
-        </nav>
+    <nav class="fixed top-0 inset-x-0 z-50 bg-white shadow-md">
+    <div class="w-full px-4 py-2 flex items-center justify-between mx-auto">
+
+        <!-- Logo -->
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="inline-flex items-center">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="18" fill="#2563EB" />
+                <text x="20" y="26"
+                      font-family="Aptos, system-ui, sans-serif"
+                      font-size="24"
+                      font-weight="700"
+                      text-anchor="middle"
+                      fill="white">
+                    P
+                </text>
+            </svg>
+        </a>
+
+        <!-- Desktop Links -->
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+            <a href="#" class="text-gray-700 hover:text-blue-600">Dashboard</a>
+            <a href="#" class="text-gray-700 hover:text-blue-600">Projects</a>
+            <a href="#" class="text-gray-700 hover:text-blue-600">Settings</a>
+        </div>
+
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t bg-white">
+        <div class="px-4 py-3 space-y-2">
+            <a href="#" class="block text-gray-700">Dashboard</a>
+            <a href="#" class="block text-gray-700">Projects</a>
+            <a href="#" class="block text-gray-700">Settings</a>
+        </div>
+    </div>
+    </nav>
     </header>
 
-    <main role="main" class="w-full h-full">
+    <main role="main" class="w-full h-full pt-16">
         @RenderBody()
     </main>
 
@@ -40,3 +61,13 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
+<script>
+    document.getElementById('nav-toggle')
+        .addEventListener('click', () => {
+            document.getElementById('mobile-menu')
+                .classList.toggle('hidden');
+        });
+</script>
+

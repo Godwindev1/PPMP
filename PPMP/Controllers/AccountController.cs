@@ -49,7 +49,7 @@ namespace PPMP.Controllers
                         return LocalRedirect(returnUrl);
 
                     else
-                        return LocalRedirect("/");
+                        return LocalRedirect("~/Dashboard/Developer");
                 }
                 else if(result.IsNotAllowed)
                 {

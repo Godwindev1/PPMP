@@ -9,7 +9,9 @@ using System.Security.Claims;
 
 namespace PPMP.Controllers
 {
+    //Changed Routing For Admin  controller CHeck For Linkage Errors In Pages
     [Authorize(policy: "FullAccessPolicy")]
+    [Route("Admin")]
     public class AdminController : Controller
     {
         private readonly ClientRepo _clientManager;
@@ -22,13 +24,13 @@ namespace PPMP.Controllers
             _roleManger = roleManager;
         }
 
-        [HttpGet("Admin")]
+        [HttpGet("Create")]
         public async Task<IActionResult> Admin()
         {
-            return View("/Views/Pages/admin.cshtml");
+            return View("/Views/admin/admin.cshtml");
         }
 
-        [HttpPost("Admin/AddClient")]
+        [HttpPost("AddClient")]
         public async Task<IActionResult> CreateUser([FromForm]ClientViewModel clientDto)
         {
             var Role = await _roleManger.FindByNameAsync("Client");

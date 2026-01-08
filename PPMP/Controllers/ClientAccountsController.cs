@@ -86,8 +86,7 @@ namespace PPMP.Controllers
 
                 if(result.Succeeded)
                 {
-                   return View("Dashboard");
-                    //TODO: Implement Client Dashboard View 
+                   return LocalRedirect("~/Dashboard/Client");
                 }
                 else if(result.PasswordNotSet)
                 {

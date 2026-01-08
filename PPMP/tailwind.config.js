@@ -1,14 +1,14 @@
 module.exports = {
   mode: 'jit',
-  darkMode: false, // or 'media' or 'class'
+  darkMode: true, // or 'media' or 'class'
   theme: {
     extend: {
-       screens: {
+      screens: {
         'max-md': { 'max': '767px' },   // Apply below 768px
         'max-sm': { 'max': '639px' },   // Apply below 640px
       },
 
-   
+
     },
   },
   variants: {

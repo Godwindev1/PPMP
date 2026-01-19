@@ -32,7 +32,7 @@ namespace PPMP.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("Account/LoginModel", Name = "LoginModel")]
         public async Task<IActionResult> LoginModel(LoginViewModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)

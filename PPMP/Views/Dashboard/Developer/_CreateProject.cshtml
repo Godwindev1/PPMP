@@ -1,0 +1,73 @@
+@model PPMP.Models.CreateProjectModel
+
+<!-- Modal Overlay -->
+<div id="ProjectCreateModal" class="modal-grow fixed inset-0 bg-transparent bg-opacity-50 flex items-center justify-center z-50 hidden bg-blur">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        @using (Html.BeginForm("CreateProject", "Admin", FormMethod.Post, new { id = "createProjectForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <!-- Modal Header -->
+            <div class="px-8 py-7 border-b border-gray-200 relative">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-2">Add Project</h2>
+                <p class="text-gray-600 text-[15px]">Add and define new project details </p>
+                <button type="button"
+                    class="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-md transition-colors text-2xl"
+                    onclick="closeProjectModal()">×</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="px-8 py-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">details</h3>
+                <!-- Client -->
+                <div class="mb-6">
+                    @Html.LabelFor(m => m.CLientID, "Client", new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                    @Html.TextBoxFor(m => m.CLientID, new { @class = "w-full px-3.5 py-2.5 text-[15px] border border-gray-300 rounded-lg focus:outline-none transition-all", placeholder = "Acme Corporation" })
+                    @Html.ValidationMessageFor(m => m.CLientID, "", new { @class = "text-red-500 text-sm mt-1" })
+                </div>
+
+                <!-- Project Name -->
+                <div class="mb-6">
+                    @Html.LabelFor(m => m.ProjectName, "Project name", new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                    @Html.TextBoxFor(m => m.ProjectName, new { @class = "w-full px-3.5 py-2.5 text-[15px] border border-gray-300 rounded-lg focus:outline-none transition-all", placeholder = "Acme Corporation" })
+                    @Html.ValidationMessageFor(m => m.ProjectName, "", new { @class = "text-red-500 text-sm mt-1" })
+                </div>
+                
+                <!-- Primary Goal -->
+                <div class="mb-6">
+                    @Html.LabelFor(m => m.PrimaryGoal, "Primary Goal", new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                    @Html.TextBoxFor(m => m.PrimaryGoal, new { @class = "w-full px-3.5 py-2.5 text-[15px] border border-gray-300 rounded-lg focus:outline-none transition-all", placeholder = "Acme Corporation" })
+                    @Html.ValidationMessageFor(m => m.PrimaryGoal, "", new { @class = "text-red-500 text-sm mt-1" })
+                </div>
+
+                <!-- Description -->
+                <div class="mb-6">
+                    @Html.LabelFor(m => m.Description, "Description", new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                    @Html.TextBoxFor(m => m.Description, new { @class = "w-full px-3.5 py-2.5 text-[15px] border border-gray-300 rounded-lg focus:outline-none transition-all", placeholder = "Acme Corporation" })
+                    @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-red-500 text-sm mt-1" })
+                </div>
+                
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-8 py-5 pb-7 border-t border-gray-200 flex justify-end gap-3">
+                <button type="button"
+                    class="hover:cursor-pointer px-5 py-2.5 text-[15px] font-medium text-gray-700 bg-white border border-gray-500 rounded-lg hover:bg-gray-100 transition-colors"
+                    onclick="closeProjectModal()">Cancel</button>
+                <button type="submit"
+                    class="hover:cursor-pointer px-6 py-2.5 text-[15px] font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">Create
+                    Project</button>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Hide default date picker icon in some browsers */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        cursor: pointer;
+    }
+</style>
+
+

@@ -1,0 +1,14 @@
+@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "Developer/_DashboardLayout";
+}
+
+@await Html.PartialAsync(partialViewName: "Developer/_MainDashboardSection", Model.mainDashboard)
+@await Html.PartialAsync(partialViewName: "Developer/_ProjectsSection", Model.projectDashboardView)
+
+@section Scripts{
+    <script src="~/js/Dashboard/developer.js"></script>       
+    <script src="~/js/Dashboard/ProjectSection.js"></script>       
+}

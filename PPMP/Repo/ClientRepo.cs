@@ -18,12 +18,12 @@ namespace PPMP.Repo
             _httpContext = (HttpContextAccessor)httpContext;
         }
 
-     
-        public async Task<Client ?> FindByIdAsync(string Id)
+
+        public async Task<Client?> FindByIdAsync(string Id)
         {
             Guid guidId;
-                if (!Guid.TryParse(Id, out guidId))
-                    return null; 
+            if (!Guid.TryParse(Id, out guidId))
+                return null;
 
             var result = await _context.Clients
                                 .FirstOrDefaultAsync(x => x.Id == guidId);
@@ -44,12 +44,12 @@ namespace PPMP.Repo
             await _context.Clients.AddAsync(client);
             await _context.SaveChangesAsync();
 
-            return client; 
+            return client;
         }
 
         public async Task<bool> SetPasswordAsync(Client client, string Password)
         {
-            if(await _context.Clients.FirstOrDefaultAsync(x => x.Id == client.Id) == null)
+            if (await _context.Clients.FirstOrDefaultAsync(x => x.Id == client.Id) == null)
             {
                 return false;
             }
@@ -61,15 +61,16 @@ namespace PPMP.Repo
             client.HasPassword = true;
             _context.Clients.Update(client);
             await _context.SaveChangesAsync();
-            
+
             return true;
         }
 
         public async Task<ClientSigninResult> SignInPasswordAsync(Client client, string Password, bool RememberMe)
         {
-            if(await FindByIdAsync(client.Id.ToString()) == null)
+            if (await FindByIdAsync(client.Id.ToString()) == null)
             {
-                return new ClientSigninResult { 
+                return new ClientSigninResult
+                {
                     Succeeded = false,
                     IsNotAllowed = false,
                     PasswordNotSet = false,
@@ -77,9 +78,10 @@ namespace PPMP.Repo
                 };
             }
 
-            if(_httpContext.HttpContext == null)
+            if (_httpContext.HttpContext == null)
             {
-                return new ClientSigninResult { 
+                return new ClientSigninResult
+                {
                     Succeeded = false,
                     IsNotAllowed = false,
                     PasswordNotSet = false,
@@ -87,9 +89,10 @@ namespace PPMP.Repo
                 };
             }
 
-            if(!client.HasPassword)
+            if (!client.HasPassword)
             {
-                return new ClientSigninResult { 
+                return new ClientSigninResult
+                {
                     Succeeded = false,
                     IsNotAllowed = false,
                     PasswordNotSet = true,
@@ -114,16 +117,17 @@ namespace PPMP.Repo
             var passwordHasher = new PasswordHasher<Client>();
             var Result = passwordHasher.VerifyHashedPassword(client, client.PasswordHash, Password);
 
-            if(Result == PasswordVerificationResult.Failed)
+            if (Result == PasswordVerificationResult.Failed)
             {
-                  return new ClientSigninResult { 
+                return new ClientSigninResult
+                {
                     Succeeded = false,
                     IsNotAllowed = false,
                     PasswordNotSet = false,
                     RequiresTwoFactor = false
                 };
             }
-            else if(Result == PasswordVerificationResult.SuccessRehashNeeded)
+            else if (Result == PasswordVerificationResult.SuccessRehashNeeded)
             {
                 await SetPasswordAsync(client, Password);
             }
@@ -131,7 +135,7 @@ namespace PPMP.Repo
             ClaimsPrincipal ClientAuth = new ClaimsPrincipal();
             ClaimsIdentity identity = new ClaimsIdentity(new List<Claim>(),
                                             CookieAuthenticationDefaults.AuthenticationScheme
-                                            ,ClaimTypes.Name, ClaimTypes.Role);
+                                            , ClaimTypes.Name, ClaimTypes.Role);
 
             identity.AddClaim(new Claim(identity.RoleClaimType, client.clientRole.Role.NormalizedName));
             identity.AddClaim(new Claim(identity.NameClaimType, client.Name));
@@ -147,9 +151,10 @@ namespace PPMP.Repo
 
             await _httpContext.HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, ClientAuth, authProperties);
 
-            if(_httpContext.HttpContext.User.Identity.IsAuthenticated)
+            if (_httpContext.HttpContext.User.Identity.IsAuthenticated)
             {
-                return new ClientSigninResult { 
+                return new ClientSigninResult
+                {
                     Succeeded = true,
                     IsNotAllowed = false,
                     PasswordNotSet = false,
@@ -158,7 +163,8 @@ namespace PPMP.Repo
             }
             else
             {
-                  return new ClientSigninResult { 
+                return new ClientSigninResult
+                {
                     Succeeded = false,
                     IsNotAllowed = false,
                     PasswordNotSet = false,
@@ -170,26 +176,34 @@ namespace PPMP.Repo
 
         public async Task<bool> AddToRoleAsync(Client client, string _Role)
         {
-            Role ?role = _context.Roles.FirstOrDefault(x => x.NormalizedName.Equals(_Role.ToUpperInvariant()) );
-            
-            if(client == null|| role ==null )
+            Role? role = _context.Roles.FirstOrDefault(x => x.NormalizedName.Equals(_Role.ToUpperInvariant()));
+
+            if (client == null || role == null)
             {
                 return false;
             }
 
-            ClientRole clientRole = new ClientRole { ClientID = client.Id, RoleID = role.Id  };
+            ClientRole clientRole = new ClientRole { ClientID = client.Id, RoleID = role.Id };
 
-            await  _context.ClientRoles.AddAsync(clientRole);
+            await _context.ClientRoles.AddAsync(clientRole);
             await SaveAsync();
 
             return true;
         }
 
- 
+        public async Task<List<Client>> GetAllClientsByDeveloper(User user)
+        {
+            return await _context.Clients.Where(x => x.DeveloperLinkId == user.Id).ToListAsync();
+        }
+
+        public float GetClientSatisfactionRate()
+        {
+            return 100.0f;
+        }
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
-            return ;
+            return;
         }
     }
 }

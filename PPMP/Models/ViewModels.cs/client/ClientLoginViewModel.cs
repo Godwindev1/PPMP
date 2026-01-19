@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-
 namespace PPMP.Models
 {
     public class ClientLoginViewModel
@@ -7,9 +6,10 @@ namespace PPMP.Models
         [Required]
         public string Token { get; set; }
         [Required]
-        public string Password {get; set;}
+        public string Password { get; set; }
 
         [Required]
-        public bool RememberMe {get; set; }
+        public bool RememberMe { get; set; }
     }
 }
+

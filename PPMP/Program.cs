@@ -7,6 +7,8 @@ using PPMP.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using PPMP.Repo;
+using Services;
+using Services.Operations;
 
 namespace PPMP
 {
@@ -21,44 +23,46 @@ namespace PPMP
             builder.Configuration.AddEnvironmentVariables();
 
 
-           builder.Services.AddDbContext<UserDBContext>(options =>
-                options.UseMySql(
-                    ConnectionString,
-                    new MySqlServerVersion(new Version(8, 0, 34))
-                )           
-            ); 
+            builder.Services.AddDbContext<UserDBContext>(options =>
+                 options.UseMySql(
+                     ConnectionString,
+                     new MySqlServerVersion(new Version(8, 0, 34))
+                 )
+             );
 
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddControllersWithViews();
 
-            builder.Services.AddIdentity<User, Role>( options =>
+            builder.Services.AddIdentity<User, Role>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;
             })
             .AddEntityFrameworkStores<UserDBContext>()
             .AddDefaultTokenProviders();
 
-            builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>            
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
             o.TokenLifespan = TimeSpan.FromMinutes(10));
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
-                options.ExpireTimeSpan = TimeSpan.FromDays(30); 
-                options.SlidingExpiration = true; 
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                options.SlidingExpiration = true;
             });
+
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy("FullAccessPolicy", policy => policy.RequireRole("DEVELOPER"))
+                .AddPolicy("ClientAccessPolicy", policy => policy.RequireRole("CLIENT"));
+
 
             builder.Services.AddScoped<ClientRepo>();
+            builder.Services.AddScoped<ProjectRepo>();
+            builder.Services.AddScoped<StateTagRepo>();
 
+            builder.Services.AddTransient<EmailService>();
 
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("FullAccessPolicy", x => { x.RequireRole("Developer"); });
-                options.AddPolicy("ClientAccessPolicy", x => { x.RequireRole("Client"); });
-            });
-
-            builder.Services.AddSingleton<EmailService>();
-
+            builder.Services.AddScoped<IStartupOperation, SeedStateTags>();
+            builder.Services.AddHostedService<StartupOperationsHostedService>();
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
@@ -80,9 +84,12 @@ namespace PPMP
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=}/{action=}/");
 
             app.Run();
         }
+
     }
+
+
 }

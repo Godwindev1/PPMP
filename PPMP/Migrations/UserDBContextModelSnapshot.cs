@@ -337,6 +337,12 @@ namespace PPMP.Migrations
                     b.Property<Guid>("ClientID")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedAtOriginalTimeZone")
+                        .HasColumnType("longtext");
+
                     b.Property<Guid>("CurrentStateTagID")
                         .HasColumnType("char(36)");
 
@@ -351,6 +357,9 @@ namespace PPMP.Migrations
                     b.Property<string>("PrimaryGoal")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("ProgressRate")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 

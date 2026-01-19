@@ -1,0 +1,18 @@
+namespace PPMP.Models
+{
+    public class ProjectDashboardViewModel
+    {
+        public struct ProjectDto
+        {
+            public Guid ID;
+            public string Name {get; set; }
+            public string PrimaryGoal {get; set; }
+            public string  ClientName {get; set; }
+            public StateTag state {get; set; }
+            public int ProgressRate {get; set; }
+        } 
+
+        public List<ProjectDto> projects {get; set;}
+
+    }
+}

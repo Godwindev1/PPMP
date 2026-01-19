@@ -12,7 +12,7 @@ using PPMP.Data;
 namespace PPMP.Migrations
 {
     [DbContext(typeof(UserDBContext))]
-    [Migration("20260103115627_mydb")]
+    [Migration("20260110092951_mydb")]
     partial class mydb
     {
         /// <inheritdoc />
@@ -340,6 +340,12 @@ namespace PPMP.Migrations
                     b.Property<Guid>("ClientID")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedAtOriginalTimeZone")
+                        .HasColumnType("longtext");
+
                     b.Property<Guid>("CurrentStateTagID")
                         .HasColumnType("char(36)");
 
@@ -354,6 +360,9 @@ namespace PPMP.Migrations
                     b.Property<string>("PrimaryGoal")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("ProgressRate")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 

@@ -20,14 +20,12 @@ namespace PPMP.Repo
 
         public async Task<Project?> Create(Project project, User Developer)
         {
-            if(project == null || Developer == null)
+            if (project == null || Developer == null)
             {
                 return null;
             }
 
             project.ID = Guid.NewGuid();
-            project.DeveloperID = Developer.Id;
-            //project.CurrentStateTagID 
 
             await _context.projects.AddAsync(project);
             await _context.SaveChangesAsync();
@@ -37,9 +35,9 @@ namespace PPMP.Repo
 
         public async Task<Project?> UpdateProject(Project? project)
         {
-            if(project == null)
+            if (project == null)
             {
-                return null ;
+                return null;
             }
 
             _context.projects.Update(project);
@@ -51,21 +49,21 @@ namespace PPMP.Repo
         public struct DeleteProjectResult
         {
             public DeleteProjectResult()
-            {}
-            public bool ProjectIsNull = false; 
+            { }
+            public bool ProjectIsNull = false;
             public bool DeleteSuccess = false;
         }
 
         public async Task<DeleteProjectResult> DeleteProject(Project project)
         {
-            if(project == null)
+            if (project == null)
             {
-                return new DeleteProjectResult { ProjectIsNull = true};
+                return new DeleteProjectResult { ProjectIsNull = true };
             }
 
-            _context.projects.Remove( project );
+            _context.projects.Remove(project);
 
-            if(await _context.projects.FindAsync(project) == null)
+            if (await _context.projects.FindAsync(project) == null)
             {
                 return new DeleteProjectResult
                 {
@@ -84,7 +82,7 @@ namespace PPMP.Repo
 
         public async Task<List<Project>?> GetProjectsByDeveloper(User Developer)
         {
-            if(Developer == null)
+            if (Developer == null)
             {
                 return null;
             }
@@ -98,7 +96,7 @@ namespace PPMP.Repo
 
         public async Task<List<Project>?> GetProjectsByClient(Client client)
         {
-            if(client == null)
+            if (client == null)
             {
                 return null;
             }
@@ -108,6 +106,32 @@ namespace PPMP.Repo
                                       .ToListAsync();
 
             return ProjectsByClient;
+        }
+
+        public async Task<List<Project>?> GetNewProjects(User Developer)
+        {
+            var results = await _context
+                .projects
+                .Where(
+                     x =>
+                     x.State.TagName.ToUpper() == StateTagEnum.REGISTERED.ToString().ToUpper()
+                )
+                .ToListAsync();
+
+            return results;
+        }
+
+        public async Task<List<Project>?> GetCompletedProjects(User Developer)
+        {
+            var results = await _context
+                .projects
+                .Where(
+                     x =>
+                     x.State.TagName.ToUpper() == StateTagEnum.COMPLETED.ToString().ToUpper()
+                )
+                .ToListAsync();
+
+            return results;
         }
     }
 }

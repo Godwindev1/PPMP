@@ -284,7 +284,11 @@ namespace PPMP.Migrations
                     ClientID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     CurrentStateTagID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Description = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    CreatedAtOriginalTimeZone = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProgressRate = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

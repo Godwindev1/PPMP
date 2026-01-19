@@ -1,0 +1,68 @@
+
+@{
+    Layout = "_Layout";
+}
+
+
+<title>Developer Dashboard</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="~/css/Dashboard/developer.css" rel="stylesheet">
+
+
+<body class="bg-gray-50 max-w-full w-[99%]">
+    <div class="flex min-h-full">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition fixed h-[calc(100%-4rem)] mb-16 bg-white shadow-lg z-50 w-64">
+            <!-- Sidebar Header -->
+            <div class="flex items-center gap-3 p-5 border-b border-gray-200">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+                    <i class="fas fa-users text-xl"></i>
+                </div>
+                <h2 id="sidebarTitle"
+                    class="text-xl font-semibold text-gray-800 whitespace-nowrap transition-opacity duration-300">
+                    Developer</h2>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="py-5">
+                <div  id="Dev-Dashboard"
+                    class="flex items-center gap-4 px-5 py-3 text-blue-600 bg-blue-50 border-r-4 border-blue-600 hover:bg-blue-50 transition-all hover:cursor-pointer">
+                    <i class="fas fa-home w-5 text-lg flex-shrink-0"></i>
+                    <span id="navText1" class="whitespace-nowrap transition-opacity duration-300">Dashboard</span>
+                </div>
+                <div id="Dev-Clients" 
+                    class="flex items-center gap-4 px-5 py-3 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all hover:cursor-pointer">
+                    <i class="fas fa-users w-5 text-lg flex-shrink-0"></i>
+                    <span id="navText2" class="whitespace-nowrap transition-opacity duration-300">Clients</span>
+                </div>
+                <div id="Dev-Projects" 
+                    class="flex items-center gap-4 px-5 py-3 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all hover:cursor-pointer">
+                    <i class="fas fa-file-alt w-5 text-lg flex-shrink-0"></i>
+                    <span id="navText3" class="whitespace-nowrap transition-opacity duration-300">Projects</span>
+                </div>
+                <div id="Dev-Settings"
+                    class="flex items-center gap-4 px-5 py-3 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all hover:cursor-pointer">
+                    <i class="fas fa-cog w-5 text-lg flex-shrink-0"></i>
+                    <span id="navText4" class="whitespace-nowrap transition-opacity duration-300">Settings</span>
+                </div>
+            </nav>
+
+            <!-- Toggle Button -->
+            <button id="toggleBtn"
+                class=" absolute bottom-5 right-1 w-10 h-10 bg-blue-600 text-white rounded-full hover:bg-blue-700 hover:scale-110 transition-all shadow-lg flex items-center justify-center">
+                <i id="toggleIcon" class="fas fa-chevron-left"></i>
+            </button>
+        </aside>
+        < <!-- Main Content -->
+        <main id="mainContent" class="sidebar-transition flex-1 ml-64 p-5 md:p-10">
+            @RenderBody()
+        <main/>
+    </div>
+
+</body>
+
+@section Scripts {
+    <script src="~/js/Dashboard/Sidebar.js"> </script>
+    @RenderSection("Scripts", required: false)
+}

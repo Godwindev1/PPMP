@@ -81,7 +81,7 @@ namespace PPMP.Controllers
                     DeveloperID = user.Id,
                     ClientID = ClientModel.CLientID,
                     CurrentStateTagID = (await _stateTagRepo.GetStateTagByName(StateTagEnum.REGISTERED)).ID,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTimeOffset.UtcNow,
                     CreatedAtOriginalTimeZone = TimeZoneInfo.Local.ToSerializedString(),
                     ProgressRate = 0
                 };

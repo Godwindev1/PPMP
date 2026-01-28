@@ -55,8 +55,20 @@
             </button>
         </aside>
         < <!-- Main Content -->
-        <main id="mainContent" class="sidebar-transition flex-1 ml-64 p-5 md:p-10">
-            @RenderBody()
+        <main id="mainContent" class="sidebar-transition flex-1 ml-64 p-5 px-10 md:p-10 md:px-20 ">
+            <div id="page-loader"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-white">
+                <div class="flex gap-2">
+                    <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                    <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                    <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></span>
+                </div>
+            </div>
+
+                    
+            <div id="page-content" class="hidden ">
+                @RenderBody()
+            </div>
         <main/>
     </div>
 
@@ -64,5 +76,6 @@
 
 @section Scripts {
     <script src="~/js/Dashboard/Sidebar.js"> </script>
+    <script src="~/js/Dashboard/DashboardLayout.js"> </script>
     @RenderSection("Scripts", required: false)
 }

@@ -33,6 +33,11 @@ namespace PPMP.Repo
             return project;
         }
 
+        public async Task<Project?> GetProjectByID(string ID)
+        {
+            return await _context.projects.Where(x => x.ID.ToString().Equals(ID)).Include(x => x.client).FirstOrDefaultAsync();
+        }
+
         public async Task<Project?> UpdateProject(Project? project)
         {
             if (project == null)
@@ -89,6 +94,7 @@ namespace PPMP.Repo
 
             var ProjectsByDeveloper = await _context.projects
                                       .Where(x => x.DeveloperID == Developer.Id)
+                                      .Include(x => x.State)
                                       .ToListAsync();
 
             return ProjectsByDeveloper;

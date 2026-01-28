@@ -10,3 +10,4 @@ function TogglePassword() {
     x.type = "password";
   }
 }
+

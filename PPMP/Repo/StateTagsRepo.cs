@@ -55,11 +55,11 @@ namespace PPMP.Repo
         {
             var defaults = new List<(string Name, string Color)>
             {
-                (StateTagEnum.REGISTERED, "#3498db"),   // Blue
-                (StateTagEnum.INPROGRESS, "#f1c40f"),   // Yellow
-                (StateTagEnum.COMPLETED, "#2ecc71"),    // Green
-                (StateTagEnum.DELIVERED, "#9b59b6"),    // Purple
-                (StateTagEnum.UNCOMPLETED, "#e74c3c")   // Red
+                (StateTagEnum.REGISTERED, "#1d4ab4d2"), // Blue
+                (StateTagEnum.INPROGRESS, "#8e9513"),   // Yellow
+                (StateTagEnum.COMPLETED, "#0f813e"),    // Green
+                (StateTagEnum.DELIVERED, "#5a0e78"),    // Purple
+                (StateTagEnum.UNCOMPLETED, "#9c1f12")   // Red
             };
 
             foreach (var (name, color) in defaults)

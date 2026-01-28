@@ -29,24 +29,16 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Date Created</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Client</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">State</th>
+                                <th class="px-[calc((var(--spacing)*3)+(var(--spacing)*4))] py-3 text-left text-xs font-semibold text-gray-600 uppercase">State</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Progress Rate</th>
                             </tr>
                         </thead>
 
                         <tbody class="divide-y divide-gray-100">
                             @{
-                                 IEnumerable<ProjectRowViewModel>? ClientRows = Model.projects.Select(   x => new ProjectRowViewModel
-                                {
-                                    Name = x.Name,
-                                    ClientName = x.ClientName,
-                                    PrimaryGoal = x.PrimaryGoal,
-                                    ProgressRate = x.ProgressRate,
-                                    state = x.state
-                                });
-
-                                foreach (ProjectRowViewModel client in ClientRows)
+                                foreach (ProjectDashboardViewModel.ProjectDto client in Model.projects)
                                 {
                                     await Html.RenderPartialAsync("Developer/_ProjectRowView", client);
                                 }

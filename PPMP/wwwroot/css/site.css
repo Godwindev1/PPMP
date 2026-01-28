@@ -74,7 +74,17 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
 .slideButtonLeft {
   position: absolute;
   transform: translateX(calc(-100% + 20px));
+}
+
+@keyframes loading-bar {
+    0%   { transform: translateX(-100%); }
+    50%  { transform: translateX(100%); }
+    100% { transform: translateX(100%); }
+}
+.animate-loading-bar {
+    animation: loading-bar 1.2s ease-in-out infinite;
 }

@@ -7,4 +7,5 @@ public class Subgoal
     //NAVIGATION 
     public Project? project {get; set;}
     public List<ProjectModification>? modifications { get; set; }
+    public List<Task>? Tasks {get; set; }
 }

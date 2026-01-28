@@ -20,13 +20,43 @@ namespace PPMP.Models
                 Name = project.ProjectName,
                 ClientName = project.client.Name,
                 PrimaryGoal = project.PrimaryGoal,
-                ProgressRate = project.ProgressRate
+                ProgressRate = project.ProgressRate,
+                state = project.State,
+                DateCreated = project.CreatedAt.LocalDateTime
             };
         }
+
+        public projectViewModel ConvertToViewModel(Project project)
+        {
+            return new projectViewModel
+            {
+                ID = project.ID,
+                Name = project.ProjectName,
+                ClientName = project.client.Name,
+                PrimaryGoal = project.PrimaryGoal,
+                ProgressRate = project.ProgressRate,
+                state = project.State,
+                DateCreated = project.CreatedAt.LocalDateTime,
+                Description = project.Description
+            };
+        }
+
 
         public List<ProjectDashboardViewModel.ProjectDto> ConvertToProjectDto(List<Project> projects)
         {
             return projects.Select(x => ConvertToProjectDto(x)).ToList();
+        }
+
+        public async Task<projectViewModel?>GetProjectByID(string  ID)
+        {
+            var project = await _projectRepo.GetProjectByID(ID);
+
+            if(project != null)
+            {
+                return ConvertToViewModel(project);               
+            }
+
+            return null;
         }
 
         public async Task<ProjectDashboardViewModel> GetDashboardData(User user)

@@ -1,18 +1,87 @@
-@model ProjectRowViewModel
+@model ProjectDashboardViewModel.ProjectDto
+
+@{
+    var baseColor = Model.state.HexColor; // e.g., #3B82F6
+    var bgColor = ColorHelper.LightenColor(baseColor, 0.88); // lighter
+    var borderColor = ColorHelper.LightenColor(baseColor, 0.5);
+    var dotColor = ColorHelper.DarkenColor(baseColor, 0.1);
+}
 
 <tr class="hover:bg-gray-50 transition-colors">
-    <td class="px-4 py-3 text-left text-[13px] font-medium text-gray-700">@Model.Name</td>
+    <td class="px-4 py-3 text-left text-[13px] font-medium text-gray-700">
+    <a href="~/Project/Dashboard/@Model.ID" class="flex flex-col items-start gap-0.5 pt-4 group hover:cursor-pointer">
+        <div class="flex items-center gap-1">
+            <span
+                id="CellName-ID"
+                class="transition-colors group-hover:text-blue-700"
+            >
+                @Model.Name
+            </span>
 
-    <td class="px-4 py-3 text-left text-[13px] font-normal text-gray-700">
+            <!-- Link icon (hidden until hover) -->
+            <svg
+                class="w-3.5 h-3.5 text-gray-400 opacity-0 transition-opacity
+                       group-hover:opacity-100 group-hover:text-blue-700"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.828 10.172a4 4 0 015.656 5.656l-3 3a4 4 0 01-5.656-5.656m-1.414 1.414a4 4 0 01-5.656-5.656l3-3a4 4 0 015.656 5.656"
+                />
+            </svg>
+        </div>
+
+        <span class="text-[10px] text-gray-400 font-normal">
+            @Model.PrimaryGoal
+        </span>
+    </a>
+</td>
+
+
+
+    <td class="px-4 py-3 text-left text-[13px] font-medium text-gray-700">
+        <div class="flex flex-col justify-center items-start gap-0.5 pt-4">
+            <span>@Model.DateCreated.ToLongDateString()</span>
+            <span class="text-[10px] text-gray-400 font-normal">@Model.DateCreated.ToString("hh:mm:ss")</span>
+        </div>
+    </td>
+
+    <td class="px-4 py-3 text-left text-[13px] font-medium text-gray-700">
         @Model.ClientName
     </td>
 
-    <td class="px-4 py-3 text-left text-[13px] font-normal text-gray-700">
-        @Model.state
+    <td class="px-4 py-2 text-left text-[13px] font-medium text-gray-700">
+        <span class="w-[60%] tracking-normal inline-flex items-center gap-2 px-3 py-1 text-xs font-medium rounded-md
+            justify-start" style="background-color: @bgColor; color: @baseColor; border-color: @borderColor">
+             <span class="w-2 h-2 rounded-full" style="background-color: @dotColor;"></span>
+             @Model.state.TagName
+        </span>
     </td>
 
     <!-- TODO: This Is PCR UI Its Meant to Be A Bar Graphic Showing A Percentage -->
-    <td class="px-4 py-3 text-left text-[13px] font-normal text-gray-700">
-       @Model.ProgressRate
+    <td class="px-4 py-3 text-left text-[13px] font-medium">
+        <div class="w-[100%] h-full flex-col flex items-start justify-center pb-[15px]">
+            <div class=" w-full flex justify-end text-[10px] text-gray-600">
+                <span>@Model.ProgressRate%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded h-2 ">
+                <div class="bg-blue-600 h-2 rounded" style="width: @Model.ProgressRate%"></div>
+            </div>
+        </div>
+            
     </td>
 </tr>
+
+@section Scripts{
+    <script>
+        const Cell = document.getElementById("CellName-ID");
+        Cell.addEventListener("onHover", () => {
+
+        })
+    </script>
+}

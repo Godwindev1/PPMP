@@ -14,6 +14,16 @@ namespace PPMP.Data
         {
         }
 
+        protected void DefineUIstateProperties(ModelBuilder builder)
+        {
+            //Should Not cascade delete
+
+            builder.Entity<Project>()
+            .HasOne(x => x.State)
+            .WithMany(x => x.projects)
+            .HasForeignKey(x => x.CurrentStateTagID)
+            .OnDelete(DeleteBehavior.Restrict);
+        }
         protected void DefineCommentsProperties(ModelBuilder builder)
         {
              //Comments
@@ -66,10 +76,8 @@ namespace PPMP.Data
             .WithMany(x => x.projects)
             .HasForeignKey(x => x.DeveloperID);
 
-            builder.Entity<Project>()
-            .HasOne(x => x.State)
-            .WithMany(x => x.projects)
-            .HasForeignKey(x => x.CurrentStateTagID);
+    
+
             
             //Project Modifications
             builder.Entity<ProjectModification>().HasKey(x => x.ID);
@@ -88,7 +96,10 @@ namespace PPMP.Data
             builder.Entity<Subgoal>()
             .HasOne(x => x.project)
             .WithMany(x => x.subgoals)
-            .HasForeignKey(x => x.ProjectID);  
+            .HasForeignKey(x => x.ProjectID);
+
+            builder.Entity<Subgoal>().HasMany(x => x.Tasks).WithOne(x => x.subgoal).HasForeignKey(x => x.SubGoalID);  
+            builder.Entity<Task>().HasKey(x => x.ID);
             
             //Sessions 
             builder.Entity<SessionPage>().HasKey(x => x.SessionID);
@@ -102,7 +113,7 @@ namespace PPMP.Data
             .WithOne(x => x.Session)
             .HasForeignKey<SessionPage>(x => x.CLientID);
 
-
+            DefineUIstateProperties(builder);
             //DefineCommentsProperties(builder);
             base.OnModelCreating(builder);
         }
@@ -115,6 +126,8 @@ namespace PPMP.Data
         public DbSet<Subgoal> subgoals {get; set; }
         public DbSet<StateTag> stateTags {get; set;}
         public DbSet<SessionPage> Sessions {get; set; }
+
+        public DbSet<Task> tasks {get; set; }
 
         //TODO; REVISIONS
         //private DbSet<Comment> comments {get; set;}

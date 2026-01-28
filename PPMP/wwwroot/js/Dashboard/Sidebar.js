@@ -1,20 +1,13 @@
-const ReloadToLastViewedPage = () => {
-    const LastViewdSection = localStorage.getItem("CurrentDashboard");
-    
-    if(LastViewdSection != null)
-    {
-        document.getElementById(LastViewdSection).hidden = false;
-        setAllOtherSectionsHidden(LastViewdSection); 
-    }
 
-}
-
-ReloadToLastViewedPage();
-
-function setAllOtherSectionsHidden(SectionName)
+function SetAsActiveSection(SectionName, reloadFlag = true)
 {
-    localStorage.setItem("CurrentDashboard", SectionName)
-    console.log(localStorage.getItem("CurrentDashboard"));
+    document.getElementById(SectionName).hidden = false;
+
+    if(reloadFlag)
+    {
+        localStorage.setItem("CurrentDashboard", SectionName)
+        console.log(localStorage.getItem("CurrentDashboard"));
+    }
 
     const SectionsNames = [ 
         "Projects-section",
@@ -45,23 +38,42 @@ const Clients = document.getElementById("Dev-Clients");
 const Dashboard = document.getElementById("Dev-Dashboard");
 
 
-Settings.addEventListener("click", () => {
+function SetAsActiveSideNav(navElement)
+{
+    navElement.classList.add("text-blue-600", "bg-blue-50", "border-r-4", "border-blue-600", "hover:bg-blue-50");
 
+    localStorage.setItem("current-nav", navElement.id);
+
+    const elements = [Settings, Projects, Clients, Dashboard];
+    elements.forEach((value) => {
+        if(value !== navElement)
+        {
+            value.classList.remove("text-blue-600", "bg-blue-50", "border-r-4", "border-blue-600", "hover:bg-blue-50"); 
+            value.classList.add("text-gray-600", "hover:bg-gray-50", "hover:text-blue-600");
+        }
+    })
+}
+
+
+Settings.addEventListener("click", () => {
+    SetAsActiveSideNav(Settings);
+    SetAsActiveSection("Settings-section");
 })
 
 Projects.addEventListener("click", () => {
-    document.getElementById("Projects-section").hidden = false;
-    setAllOtherSectionsHidden("Projects-section");
+    SetAsActiveSideNav(Projects);
+    SetAsActiveSection("Projects-section");
 })
 
 Clients.addEventListener("click", () => {
-    
+    SetAsActiveSideNav(Clients);
+    SetAsActiveSection("Clients-section");
 })
 
 
 Dashboard.addEventListener("click", () => {
-    document.getElementById("Dashboard-section").hidden = false;
-    setAllOtherSectionsHidden("Dashboard-section");
+    SetAsActiveSideNav(Dashboard);
+    SetAsActiveSection("Dashboard-section");
 })
 
 {

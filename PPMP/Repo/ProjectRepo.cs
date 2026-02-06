@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -35,7 +36,13 @@ namespace PPMP.Repo
 
         public async Task<Project?> GetProjectByID(string ID)
         {
-            return await _context.projects.Where(x => x.ID.ToString().Equals(ID)).Include(x => x.client).FirstOrDefaultAsync();
+            return await _context.projects
+                        .Where(x => x.ID.ToString()
+                        .Equals(ID))
+                        .Include(x => x.client)
+                        .Include(x => x.subgoals)
+                        .ThenInclude(x => x.state)
+                        .FirstOrDefaultAsync();
         }
 
         public async Task<Project?> UpdateProject(Project? project)

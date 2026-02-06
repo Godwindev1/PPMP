@@ -57,6 +57,8 @@ namespace PPMP
             builder.Services.AddScoped<ClientRepo>();
             builder.Services.AddScoped<ProjectRepo>();
             builder.Services.AddScoped<StateTagRepo>();
+            builder.Services.AddScoped<SubgoalRepo>();
+            builder.Services.AddScoped<GoalTaskRepo>();
 
             builder.Services.AddTransient<EmailService>();
 

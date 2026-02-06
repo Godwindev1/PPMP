@@ -8,4 +8,6 @@ public class projectViewModel{
     public StateTag state {get; set; }
     public int ProgressRate {get; set; } 
     public DateTime DateCreated {get; set; }
+
+    public List<Subgoal> subgoals {get; set; }
 }

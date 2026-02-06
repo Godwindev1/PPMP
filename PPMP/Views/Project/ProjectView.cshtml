@@ -19,9 +19,10 @@
             <div class="max-w-[900px]">
                 <div class="flex justify-between items-center mb-6">
                     <span class="text-lg font-semibold text-slate-800">Roadmap: @Model.PrimaryGoal</span>
-                    <button class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
-                        Add Task <i class="fa fa-plus text-xs"></i>
-                    </button>
+                <button onclick="OpenAddModal()"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md">
+                    Add Subgoal <i class="fa fa-plus text-xs"></i>
+                </button>
                 </div>
 
                 <div class="mb-8">
@@ -30,7 +31,7 @@
                         <span>@Model.ProgressRate%</span>
                     </div>
                     <div class="h-1.5 w-full bg-slate-100 rounded-full">
-                        <div class="h-full bg-blue-600 rounded-full" style="width: 60%"></div>
+                        <div class="h-full bg-blue-600 rounded-full" style="width: @Model.ProgressRate%"></div>
                     </div>
                 </div>
             </div>
@@ -38,68 +39,10 @@
 
         <div class="flex-grow overflow-y-auto px-10 pb-10">
             <div class="max-w-[900px] space-y-4">
-                
-                <div class="task-group border border-slate-200 rounded-lg overflow-hidden bg-white">
-                    <div class="group-header flex justify-between items-center p-4 px-5 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors" onclick="toggleGroup(this)">
-                        <span class="text-sm font-semibold text-slate-800 uppercase tracking-tight">Initial Planning</span>
-                        <div class="flex items-center gap-3">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 text-[11px] font-bold rounded-full border border-blue-100 uppercase">
-                                <span class="w-1.5 h-1.5 bg-current rounded-full"></span> Registered
-                            </span>
-                            <i class="fa fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
-                        </div>
-                    </div>
-                    <div class="task-list hidden border-t border-slate-200">
-                        </div>
-                </div>
-
-                <div class="task-group active border border-slate-200 rounded-lg overflow-hidden bg-white">
-                    <div class="group-header flex justify-between items-center p-4 px-5 bg-white cursor-pointer" onclick="toggleGroup(this)">
-                        <span class="text-sm font-semibold text-slate-800 uppercase tracking-tight">Preliminary Concepting</span>
-                        <div class="flex items-center gap-3">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 text-[11px] font-bold rounded-full border border-blue-100 uppercase">
-                                <span class="w-1.5 h-1.5 bg-current rounded-full"></span> In Progress
-                            </span>
-                            <i class="fa fa-chevron-up text-slate-400 text-xs transition-transform duration-200"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="task-list block border-t border-slate-200 divide-y divide-slate-100">
-                        <div class="flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors group">
-                            <div class="w-4.5 h-4.5 border-2 border-blue-600 bg-blue-600 rounded flex items-center justify-center text-white text-[10px]">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <span class="flex-grow text-sm text-blue-600 font-medium">Complete checklist for roadmap</span>
-                            <img src="https://i.pravatar.cc/150?u=1" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="user">
-                        </div>
-                        
-                        <div class="flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors">
-                            <div class="w-4.5 h-4.5 border-2 border-slate-300 rounded cursor-pointer"></div>
-                            <span class="flex-grow text-sm text-slate-700">Update component library</span>
-                            <span class="text-[11px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-medium">In Progress</span>
-                        </div>
-
-                        <div class="flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors">
-                            <div class="w-4.5 h-4.5 border-2 border-slate-300 rounded cursor-pointer"></div>
-                            <span class="flex-grow text-sm text-slate-700">Refactor main components</span>
-                            <img src="https://i.pravatar.cc/150?u=4" class="w-6 h-6 rounded-full" alt="user">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="task-group border border-slate-200 rounded-lg overflow-hidden bg-white">
-                    <div class="group-header flex justify-between items-center p-4 px-5 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors" onclick="toggleGroup(this)">
-                        <span class="text-sm font-semibold text-slate-800 uppercase tracking-tight">Refining Concepts</span>
-                        <div class="flex items-center gap-3">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-slate-500 text-[11px] font-bold rounded-full border border-slate-200 uppercase">
-                                <span class="w-1.5 h-1.5 bg-current rounded-full"></span> Pending
-                            </span>
-                            <i class="fa fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
-                        </div>
-                    </div>
-                    <div class="task-list hidden"></div>
-                </div>
-
+                @foreach(Subgoal Subgoal in Model.subgoals )
+                {
+                    <partial name="_SubgoalRecord" model="Subgoal" />
+                }
             </div>
         </div>
     </div>
@@ -139,56 +82,41 @@
         </div>
     </aside>
 
+    <div id="taskModal"
+     class=" fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+
+        <div class="bg-white w-full max-w-md rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-slate-800 mb-4">
+                New Subgoal
+            </h3>
+
+            <form asp-route="SubgoalCreate" id="taskForm" class="space-y-4">
+                <input type="hidden" name="ProjectID" value="@Model.ID" />
+
+                <input name="Goal"
+                    required
+                    placeholder="Task description"
+                    class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500" />
+
+                <div class="flex justify-end gap-2">
+                    <button type="button"
+                            onclick="CloseAddModal()"
+                            class="px-4 py-2 text-sm border rounded-md">
+                        Cancel
+                    </button>
+
+                    <button type="submit"
+                            class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </section>
 
 @section Scripts 
 {
-    <script>        
-        function toggleGroup(header) {
-            const group = header.closest('.task-group');
-            const list = group.querySelector('.task-list');
-            const icon = header.querySelector('.fa-chevron-down, .fa-chevron-up');
-            
-            const isActive = group.classList.toggle('active');
-            
-            // Toggle visibility classes
-            if (isActive) {
-                list.classList.remove('hidden');
-                list.classList.add('block');
-                header.classList.remove('bg-slate-50');
-                header.classList.add('bg-white');
-                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
-            } else {
-                list.classList.remove('block');
-                list.classList.add('hidden');
-                header.classList.add('bg-slate-50');
-                header.classList.remove('bg-white');
-                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
-            }
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const val = input.value.trim();
-            if (val) {
-                const box = document.getElementById('chatBox');
-                const msgHtml = `
-                    <div class="flex flex-col max-w-[90%] ml-auto items-end">
-                        <div class="bg-blue-600 text-white text-sm p-3 rounded-lg shadow-sm">
-                            ${val}
-                        </div>
-                    </div>`;
-                box.insertAdjacentHTML('beforeend', msgHtml);
-                input.value = '';
-                box.scrollTop = box.scrollHeight;
-            }
-        }
-
-        function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
-
-        // Your custom helper
-        if (typeof SetAsActiveSection === "function") {
-            SetAsActiveSection("project-view", false);
-        }
-    </script>
+    <script src="~/js/Project/ProjectView.js"></script>
 }

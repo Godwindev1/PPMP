@@ -59,7 +59,8 @@ namespace PPMP.Repo
                 (StateTagEnum.INPROGRESS, "#8e9513"),   // Yellow
                 (StateTagEnum.COMPLETED, "#0f813e"),    // Green
                 (StateTagEnum.DELIVERED, "#5a0e78"),    // Purple
-                (StateTagEnum.UNCOMPLETED, "#9c1f12")   // Red
+                (StateTagEnum.UNCOMPLETED, "#9c1f12"),   // Red
+                (StateTagEnum.PENDING, "#686767")   // grey
             };
 
             foreach (var (name, color) in defaults)

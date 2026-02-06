@@ -64,6 +64,26 @@ namespace PPMP.Migrations
                     b.ToTable("Comment");
                 });
 
+            modelBuilder.Entity("GoalTask", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("SubGoalID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("TaskGoal")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("SubGoalID");
+
+                    b.ToTable("tasks");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -280,9 +300,6 @@ namespace PPMP.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("GuestID")
-                        .HasColumnType("char(36)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
 
@@ -360,6 +377,11 @@ namespace PPMP.Migrations
 
                     b.Property<int>("ProgressRate")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("ID");
 
@@ -454,14 +476,14 @@ namespace PPMP.Migrations
                     b.Property<Guid>("ProjectID")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("StateTagID")
+                    b.Property<Guid>("stateTagID")
                         .HasColumnType("char(36)");
 
                     b.HasKey("ID");
 
                     b.HasIndex("ProjectID");
 
-                    b.HasIndex("StateTagID");
+                    b.HasIndex("stateTagID");
 
                     b.ToTable("subgoals");
                 });
@@ -487,6 +509,17 @@ namespace PPMP.Migrations
                     b.Navigation("client");
 
                     b.Navigation("project");
+                });
+
+            modelBuilder.Entity("GoalTask", b =>
+                {
+                    b.HasOne("Subgoal", "subgoal")
+                        .WithMany("Tasks")
+                        .HasForeignKey("SubGoalID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("subgoal");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -581,7 +614,7 @@ namespace PPMP.Migrations
                     b.HasOne("StateTag", "State")
                         .WithMany("projects")
                         .HasForeignKey("CurrentStateTagID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PPMP.Data.User", "Developer")
@@ -643,11 +676,15 @@ namespace PPMP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StateTag", null)
+                    b.HasOne("StateTag", "state")
                         .WithMany("subgoals")
-                        .HasForeignKey("StateTagID");
+                        .HasForeignKey("stateTagID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("project");
+
+                    b.Navigation("state");
                 });
 
             modelBuilder.Entity("PPMP.Data.Client", b =>
@@ -696,6 +733,8 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("Subgoal", b =>
                 {
+                    b.Navigation("Tasks");
+
                     b.Navigation("modifications");
                 });
 #pragma warning restore 612, 618

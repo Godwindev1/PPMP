@@ -1,4 +1,5 @@
-public class Task
+
+public class GoalTask
 {
     public Guid ID {get; set; }
 

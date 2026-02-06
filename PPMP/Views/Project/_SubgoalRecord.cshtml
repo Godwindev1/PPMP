@@ -1,0 +1,47 @@
+@model Subgoal
+
+@{
+    var baseColor = Model.state.HexColor; // e.g., #3B82F6
+    var bgColor = ColorHelper.LightenColor(baseColor, 0.88); // lighter
+    var borderColor = ColorHelper.LightenColor(baseColor, 0.5);
+    var TextColor = ColorHelper.DarkenColor(baseColor, 0.1);
+}
+
+<div class="task-group active border border-slate-200 rounded-lg overflow-hidden bg-white">
+                    <div class="group-header flex justify-between items-center p-4 px-5 bg-white cursor-pointer" onclick="toggleGroup(this)">
+                        <span class="text-sm font-semibold text-slate-800 uppercase tracking-tight">@Model.Goal</span>
+                        <div class="flex items-center gap-3">
+                            
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1
+                             bg-blue-50 text-blue-600 text-[11px] font-bold rounded-full border border-blue-100 uppercase "
+                             style="background-color: @bgColor; border-color: @borderColor; color: @TextColor; ">
+                                <span class="w-1.5 h-1.5 bg-current rounded-full"></span>
+                                 @Model.state.TagName
+                            </span>
+
+                            <i class="fa fa-chevron-up text-slate-400 text-xs transition-transform duration-200"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="task-list block border-t border-slate-200 divide-y divide-slate-100">
+                        <div class="flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors group">
+                            <div class="w-4.5 h-4.5 border-2 border-blue-600 bg-blue-600 rounded flex items-center justify-center text-white text-[10px]">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <span class="flex-grow text-sm text-blue-600 font-medium">Complete checklist for roadmap</span>
+                            <img src="https://i.pravatar.cc/150?u=1" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="user">
+                        </div>
+                        
+                        <div class="flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors">
+                            <div class="w-4.5 h-4.5 border-2 border-slate-300 rounded cursor-pointer"></div>
+                            <span class="flex-grow text-sm text-slate-700">Update component library</span>
+                            <span class="text-[11px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-medium">In Progress</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors">
+                            <div class="w-4.5 h-4.5 border-2 border-slate-300 rounded cursor-pointer"></div>
+                            <span class="flex-grow text-sm text-slate-700">Refactor main components</span>
+                            <img src="https://i.pravatar.cc/150?u=4" class="w-6 h-6 rounded-full" alt="user">
+                        </div>
+                    </div>
+</div>

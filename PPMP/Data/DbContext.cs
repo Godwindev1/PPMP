@@ -23,6 +23,13 @@ namespace PPMP.Data
             .WithMany(x => x.projects)
             .HasForeignKey(x => x.CurrentStateTagID)
             .OnDelete(DeleteBehavior.Restrict);
+
+            
+            builder.Entity<Subgoal>()
+            .HasOne(x => x.state)
+            .WithMany(x => x.subgoals)
+            .HasForeignKey(x => x.stateTagID)
+            .OnDelete(DeleteBehavior.Restrict);
         }
         protected void DefineCommentsProperties(ModelBuilder builder)
         {
@@ -76,8 +83,6 @@ namespace PPMP.Data
             .WithMany(x => x.projects)
             .HasForeignKey(x => x.DeveloperID);
 
-    
-
             
             //Project Modifications
             builder.Entity<ProjectModification>().HasKey(x => x.ID);
@@ -99,7 +104,7 @@ namespace PPMP.Data
             .HasForeignKey(x => x.ProjectID);
 
             builder.Entity<Subgoal>().HasMany(x => x.Tasks).WithOne(x => x.subgoal).HasForeignKey(x => x.SubGoalID);  
-            builder.Entity<Task>().HasKey(x => x.ID);
+            builder.Entity<GoalTask>().HasKey(x => x.ID);
             
             //Sessions 
             builder.Entity<SessionPage>().HasKey(x => x.SessionID);
@@ -127,7 +132,7 @@ namespace PPMP.Data
         public DbSet<StateTag> stateTags {get; set;}
         public DbSet<SessionPage> Sessions {get; set; }
 
-        public DbSet<Task> tasks {get; set; }
+        public DbSet<GoalTask> tasks {get; set; }
 
         //TODO; REVISIONS
         //private DbSet<Comment> comments {get; set;}

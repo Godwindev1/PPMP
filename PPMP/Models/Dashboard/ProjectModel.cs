@@ -37,7 +37,8 @@ namespace PPMP.Models
                 ProgressRate = project.ProgressRate,
                 state = project.State,
                 DateCreated = project.CreatedAt.LocalDateTime,
-                Description = project.Description
+                Description = project.Description,
+                subgoals = project.subgoals
             };
         }
 

@@ -5,6 +5,7 @@ public class GoalTask
 
     public Guid SubGoalID { get; set; }
     public string TaskGoal {get; set; }
+    public bool Completed {get; set; }
 
-    public Subgoal subgoal {get; set;}
+    public Subgoal subgoal {get; set;} 
 }

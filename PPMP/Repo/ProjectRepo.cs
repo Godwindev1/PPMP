@@ -42,6 +42,8 @@ namespace PPMP.Repo
                         .Include(x => x.client)
                         .Include(x => x.subgoals)
                         .ThenInclude(x => x.state)
+                        .Include(x => x.subgoals)
+                        .ThenInclude(x => x.Tasks)                        
                         .FirstOrDefaultAsync();
         }
 

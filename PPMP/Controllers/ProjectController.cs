@@ -15,19 +15,27 @@ namespace PPMP.Controllers
         private readonly ProjectDashboardModel _ProjectDashboardModel;
         private readonly SubgoalRepo _subgoalRepo;
 
+        private readonly GoalTaskRepo _goalTaskRepo;
+
         private readonly StateTagRepo _stateTagRepo;
-        public ProjectController(  ProjectRepo projectRepo, SubgoalRepo subgoalRepo, StateTagRepo repo)
+        public ProjectController(ProjectRepo projectRepo, SubgoalRepo subgoalRepo, GoalTaskRepo goalTaskRepo, StateTagRepo repo)
         {
+            _goalTaskRepo = goalTaskRepo;
             _stateTagRepo = repo;
             _subgoalRepo = subgoalRepo;
             _ProjectDashboardModel = new ProjectDashboardModel(projectRepo);
         }
 
+        public async Task UpdateProjectState()
+        {
+            //TODO
+            //this function will eventually be Responsible for updatng the Data Base State of A Project
+        }
 
         [HttpGet("dashboard/{ID:guid}")]
-        public async Task<IActionResult> Project([FromRoute]string ID)
+        public async Task<IActionResult> Project([FromRoute] string ID)
         {
-            var Project =  await _ProjectDashboardModel.GetProjectByID(ID) ; 
+            var Project = await _ProjectDashboardModel.GetProjectByID(ID);
             return View("ProjectView", Project);
         }
 
@@ -36,7 +44,9 @@ namespace PPMP.Controllers
         {
             try
             {
-                Subgoal goal = new Subgoal { 
+                Subgoal goal = new Subgoal
+                {
+                    DueDate = subgoalViewModel.DueDate,
                     Goal = subgoalViewModel.Goal,
                     ProjectID = subgoalViewModel.ProjectID,
                     ID = new Guid(),
@@ -45,11 +55,36 @@ namespace PPMP.Controllers
 
                 await _subgoalRepo.CreateAsync(goal);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest();
             }
-           
+
+
+            return new OkResult();
+
+        }
+
+        [HttpPost("Add/Task", Name = "AddTasksToGoal")]
+        public async Task<IActionResult> AddTaskToGoal(TaskViewModel TaskView)
+        {
+            try
+            {
+                GoalTask Task = new GoalTask
+                {
+                    TaskGoal = TaskView.TaskGoal,
+                    SubGoalID = TaskView.SubgoalID,
+                    ID = Guid.CreateVersion7(),
+                    Completed = false
+                };
+
+                await _goalTaskRepo.CreateAsync(Task);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
 
             return new OkResult();
 

@@ -26,7 +26,9 @@ namespace PPMP.Repo
         {
             return await _context.subgoals
                 .Where(x => x.ProjectID == projectId)
+                .OrderByDescending((x) => x.DueDate)
                 .ToListAsync();
+
         }
 
         // Create

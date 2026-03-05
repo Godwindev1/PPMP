@@ -42,6 +42,10 @@
         <div class="add-task-row">
             <form asp-route="AddTasksToGoal" method="post" onsubmit="return false;">
                 <input hidden name="SubgoalID" value="@Model.ID" />
+                <input hidden name="ProjectID" value="@Model.ProjectID" />
+                <!--<input hidden name="CurrentTaskAmount" value="@Model.project.TotalNumberOfTasks" /> -->
+                <!--<input hidden name="CurrentCompletedTaskAmount" value="@Model.project.TotalCompletedTasks" /> -->
+
                 <input
                     type="text"
                     name="TaskGoal"

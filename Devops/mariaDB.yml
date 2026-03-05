@@ -21,6 +21,17 @@ services:
     env_file:
       - .env
 
+  rootadmin:
+    image: phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: ${MYSQL_SUPERADMIN}
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    env_file:
+      - .env
+
 volumes:
   mariadb_data:
 

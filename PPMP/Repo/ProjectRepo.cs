@@ -40,10 +40,19 @@ namespace PPMP.Repo
                         .Where(x => x.ID.ToString()
                         .Equals(ID))
                         .Include(x => x.client)
-                        .Include(x => x.subgoals)
+                        .Include(x => x.subgoals.OrderBy(sg => sg.DueDate))
                         .ThenInclude(x => x.state)
                         .Include(x => x.subgoals)
-                        .ThenInclude(x => x.Tasks)                        
+                        .ThenInclude(x => x.Tasks)  
+                        .FirstOrDefaultAsync();
+        }
+
+        
+        public async Task<Project?> GetProjectByIDWithoutNavigation(string ID)
+        {
+            return await _context.projects
+                        .Where(x => x.ID.ToString()
+                        .Equals(ID))  
                         .FirstOrDefaultAsync();
         }
 

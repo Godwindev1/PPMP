@@ -18,8 +18,11 @@ namespace PPMP.Controllers
         private readonly GoalTaskRepo _goalTaskRepo;
 
         private readonly StateTagRepo _stateTagRepo;
+
+        private readonly ProjectRepo _projectRepo;
         public ProjectController(ProjectRepo projectRepo, SubgoalRepo subgoalRepo, GoalTaskRepo goalTaskRepo, StateTagRepo repo)
         {
+            _projectRepo = projectRepo;
             _goalTaskRepo = goalTaskRepo;
             _stateTagRepo = repo;
             _subgoalRepo = subgoalRepo;
@@ -65,6 +68,49 @@ namespace PPMP.Controllers
 
         }
 
+        private async Task UpdateProjectTotalTasks(string projectId, int delta)
+        {
+           var Result =  await _projectRepo.GetProjectByIDWithoutNavigation(projectId);
+           
+            if(Result != null)
+            {
+                Result.TotalNumberOfTasks += delta;
+                
+                Result.ProgressRate =   Result.TotalNumberOfTasks == 0
+                                        ? 0
+                                        : Result.TotalCompletedTasks / Result.TotalNumberOfTasks;
+
+                await _projectRepo.UpdateProject(Result);
+            }
+           
+        }
+
+        private async Task UpdateCompletedTasks(string projectId, int delta)
+        {
+            var Result =  await _projectRepo.GetProjectByIDWithoutNavigation(projectId);
+           
+            if(Result != null)
+            {
+                Result.TotalNumberOfTasks += delta;
+                Result.ProgressRate = Result.TotalNumberOfTasks / Result.TotalCompletedTasks;
+                await _projectRepo.UpdateProject(Result);
+            }
+        }
+
+        [HttpPost("Complete/Task", Name = "CompleteTask")]
+        public async Task CompleteTask(string TaskID, TaskViewModel taskView)
+        {
+            await _goalTaskRepo.UpdateAsync(new GoalTask { ID = new Guid(TaskID), Completed = true});
+            await UpdateCompletedTasks(taskView.ProjectID.ToString(), +1);
+        }
+
+        [HttpPost("InComplete/Task", Name = "InCompleteTask")]
+        public async Task InCompleteTask(string TaskID, TaskViewModel taskView)
+        {
+            await _goalTaskRepo.UpdateAsync(new GoalTask { ID = new Guid(TaskID), Completed = false});
+            await UpdateCompletedTasks(taskView.ProjectID.ToString(), -1);
+        }
+
         [HttpPost("Add/Task", Name = "AddTasksToGoal")]
         public async Task<IActionResult> AddTaskToGoal(TaskViewModel TaskView)
         {
@@ -78,7 +124,12 @@ namespace PPMP.Controllers
                     Completed = false
                 };
 
-                await _goalTaskRepo.CreateAsync(Task);
+                var res = await _goalTaskRepo.CreateAsync(Task);
+                
+                if(res != null)
+                {
+                    await UpdateProjectTotalTasks(TaskView.ProjectID.ToString(), +1);
+                }
             }
             catch (Exception ex)
             {

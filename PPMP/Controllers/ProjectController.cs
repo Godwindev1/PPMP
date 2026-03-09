@@ -37,6 +37,22 @@ namespace PPMP.Controllers
             return View("ProjectView", Project);
         }
 
+        [HttpPost("Delete/goal", Name ="DeleteSubgoal")]
+        public async Task<IActionResult> DeleteSubGoal([FromBody]SubgoalDeleteModel deleteModel)
+        {
+            //Get Subgoal 
+            var SubGoal = await _subgoalRepo.GetByIdAsync(deleteModel.SubgoalID);
+            var TotalTasks = SubGoal.Tasks.Count;
+            var CompletedTasks = SubGoal.Tasks.Select(x => x.Completed == true).Count();
+
+            await UpdateCompletedTasks(SubGoal.ProjectID.ToString(), -1 * CompletedTasks);
+            await UpdateProjectTotalTasks(SubGoal.ProjectID.ToString(), -1 * TotalTasks);
+
+            await _subgoalRepo.DeleteAsync(SubGoal.ID);
+
+            return new OkResult();
+        }
+
         [HttpPost("Add/goal", Name = "SubgoalCreate")]
         public async Task<IActionResult> AddSubGoal(SubgoalViewModel subgoalViewModel)
         {
@@ -70,12 +86,7 @@ namespace PPMP.Controllers
             if(Result != null)
             {
                 Result.TotalNumberOfTasks += delta;
-                
-                //REMOVE EVERYTHING CONCERNING PROGRESS RATE FROM DB (IT Will Now Be Calculated withing Project Model From both Set of totals)
-               /* Result.ProgressRate =   Result.TotalNumberOfTasks == 0
-                                        ? 0
-                                        : Result.TotalCompletedTasks / Result.TotalNumberOfTasks * 100; */
-
+                Result.TotalNumberOfTasks =  Math.Max(0, Result.TotalNumberOfTasks);
                 await _projectRepo.UpdateProject(Result);
             }
            
@@ -88,22 +99,9 @@ namespace PPMP.Controllers
             if(Result != null)
             {
                 Result.TotalCompletedTasks += delta;
+                Result.TotalCompletedTasks =  Math.Max(0, Result.TotalCompletedTasks);
                 await _projectRepo.UpdateProject(Result);
             }
-        }
-
-        [HttpPost("Complete/Task", Name = "CompleteTask")]
-        public async Task CompleteTask(string TaskID, TaskViewModel taskView)
-        {
-            await _goalTaskRepo.UpdateAsync(new GoalTask { ID = new Guid(TaskID), Completed = true});
-            await UpdateCompletedTasks(taskView.ProjectID.ToString(), +1);
-        }
-
-        [HttpPost("InComplete/Task", Name = "InCompleteTask")]
-        public async Task InCompleteTask(string TaskID, TaskViewModel taskView)
-        {
-            await _goalTaskRepo.UpdateAsync(new GoalTask { ID = new Guid(TaskID), Completed = false});
-            await UpdateCompletedTasks(taskView.ProjectID.ToString(), -1);
         }
 
         [HttpPost("Add/Task", Name = "AddTasksToGoal")]
@@ -135,6 +133,25 @@ namespace PPMP.Controllers
             return new OkResult();
 
         }
+
+        [HttpPost("Delete/Task", Name = "DeleteTask")]
+        public async Task<IActionResult> DeleteTask([FromBody]TaskDeleteModel taskDeleteModel)
+        {
+            var task = await _goalTaskRepo.GetByIdAsync(taskDeleteModel.TaskID); 
+            var ProjectID = (await _subgoalRepo.GetByIdAsync(taskDeleteModel.SubgoalID)).ProjectID;
+
+            await UpdateProjectTotalTasks(ProjectID.ToString(), -1);
+
+            if(task.Completed == true)
+            {
+                await UpdateCompletedTasks(ProjectID.ToString(), -1);
+            }
+
+            await _goalTaskRepo.DeleteAsync(task.ID);
+
+            return new OkResult();
+        }
+
 
         [HttpPost("Update/Task", Name = "UpdateTask")]
         public async Task<IActionResult> UpdateTask([FromBody]TaskUpdateModel taskUpdate)

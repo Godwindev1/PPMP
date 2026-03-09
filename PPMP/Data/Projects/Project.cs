@@ -19,7 +19,10 @@ public class Project
     public string Description { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public string? CreatedAtOriginalTimeZone { get; set; }
-    public int ProgressRate { get; set; }
+
+    [Obsolete]
+    public int ProgressRate { get; set; } 
+    
     public int TotalNumberOfTasks {get; set; }
     public int TotalCompletedTasks {get; set; }
     

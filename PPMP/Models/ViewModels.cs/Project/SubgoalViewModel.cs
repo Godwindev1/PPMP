@@ -4,3 +4,8 @@ public class SubgoalViewModel
     required public string Goal { get; set; }
     required public DateTime DueDate {get; set; }
 }
+
+public class SubgoalDeleteModel
+{
+    required public Guid SubgoalID {get; set; }
+}

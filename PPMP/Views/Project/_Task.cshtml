@@ -24,6 +24,24 @@
         100% { stroke-dashoffset: 30; opacity: 0; }
     }
 
+    /* Delete button animations */
+    @@keyframes trashLidPop {
+        0%   { transform: rotate(0deg) translateY(0px); }
+        30%  { transform: rotate(-25deg) translateY(-3px); }
+        60%  { transform: rotate(10deg) translateY(-1px); }
+        100% { transform: rotate(0deg) translateY(0px); }
+    }
+    @@keyframes rowSlideOut {
+        0%   { opacity: 1; transform: translateX(0); max-height: 60px; }
+        40%  { opacity: 0; transform: translateX(40px); max-height: 60px; }
+        100% { opacity: 0; transform: translateX(40px); max-height: 0; padding: 0; }
+    }
+    @@keyframes deletePulse {
+        0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+        70%  { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
     .task-checkbox svg .check-path {
         stroke-dasharray: 30;
         stroke-dashoffset: 30;
@@ -41,33 +59,95 @@
     .task-checkbox.pop-reverse {
         animation: checkPop-reverse 0.3s ease forwards;
     }
+
+    /* Delete button styles */
+    .delete-btn {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+        pointer-events: none;
+    }
+    .group:hover .delete-btn {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+    .delete-btn:hover {
+        animation: deletePulse 0.5s ease forwards;
+    }
+    .delete-btn:hover .trash-lid {
+        animation: trashLidPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        transform-origin: left center;
+    }
+    .task-row.deleting {
+        animation: rowSlideOut 0.45s ease forwards;
+        overflow: hidden;
+        pointer-events: none;
+    }
 </style>
 
-<div class="flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors group">
+<div class="task-row flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors group">
 
     <span class="flex-grow text-sm font-medium transition-all duration-300 task-label">
         @Model.TaskGoal
     </span>
 
-   <button
-    onclick="toggleTask(this)"
-    data-checked="@Model.Completed.ToString().ToLower()"
-    data-task-id="@Model.ID"
-    data-sub-goal-id="@Model.SubGoalID"
-    class="task-checkbox hover:cursor-pointer w-6 h-6 rounded-full border-2 border-gray-300 bg-white flex items-center justify-center flex-shrink-0 transition-colors duration-200 hover:border-green-400">
+    <!-- Delete Button -->
+    <button
+        onclick="deleteTask(this)"
+        data-task-id="@Model.ID"
+        data-sub-goal-id="@Model.SubGoalID"
+        title="Delete task"
+        class="delete-btn w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 hover:bg-red-50 hover:border hover:border-red-200 text-gray-300 hover:text-red-500 hover:cursor-pointer transition-colors duration-150">
+        <svg viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-4">
+            <!-- Lid -->
+            <path
+                class="trash-lid"
+                d="M1 4h14M5.5 4V2.5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V4"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <!-- Body -->
+            <path
+                d="M3 4l1 11a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-11"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <!-- Inner lines -->
+            <path
+                d="M6.5 7.5v5M9.5 7.5v5"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+            />
+        </svg>
+    </button>
 
-    <svg viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5">
-        <path
-            class="check-path"
-            d="M1.5 6 L5.5 10 L12.5 1.5"
-            stroke="white"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        />
-    </svg>
-</button>
+    <!-- Checkbox -->
+    <button
+        onclick="toggleTask(this)"
+        data-checked="@Model.Completed.ToString().ToLower()"
+        data-task-id="@Model.ID"
+        data-sub-goal-id="@Model.SubGoalID"
+        class="task-checkbox hover:cursor-pointer w-6 h-6 rounded-full border-2 border-gray-300 bg-white flex items-center justify-center flex-shrink-0 transition-colors duration-200 hover:border-green-400">
+        <svg viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5">
+            <path
+                class="check-path"
+                d="M1.5 6 L5.5 10 L12.5 1.5"
+                stroke="white"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+    </button>
+
 </div>
+
 <script>
 function applyCheckState(checkbox) {
     const label = checkbox.closest('.group').querySelector('.task-label');
@@ -129,7 +209,34 @@ function toggleTask(checkbox) {
     });
 }
 
-// Initialize state from Model.Completed on page load
+function deleteTask(btn) {
+    const row = btn.closest('.task-row');
+    const taskId = btn.dataset.taskId;
+    const subGoalId = btn.dataset.subGoalId;
+
+    // Trigger slide-out animation
+    row.classList.add('deleting');
+
+    // Remove the row from DOM after animation completes
+    row.addEventListener('animationend', () => row.remove(), { once: true });
+
+    // TODO: Implement your delete logic here
+    $.ajax({
+        url: '/Project/Delete/Task',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            taskID: taskId,
+            subGoalID: subGoalId,
+        }),
+        error: function(xhr, status, err) {
+            // Rollback: re-show the row if request fails
+            row.classList.remove('deleting');
+            console.error('Failed to delete task:', err);
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.task-checkbox').forEach(applyCheckState);
 });

@@ -28,8 +28,7 @@ namespace PPMP.Models
         }
 
         public projectViewModel ConvertToViewModel(Project project)
-        {
-           
+        {         
             var result = project.TotalNumberOfTasks == 0
                         ? 0
                         : (double)project.TotalCompletedTasks / project.TotalNumberOfTasks * 100;

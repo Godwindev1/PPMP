@@ -29,13 +29,18 @@ namespace PPMP.Models
 
         public projectViewModel ConvertToViewModel(Project project)
         {
+           
+            var result = project.TotalNumberOfTasks == 0
+                        ? 0
+                        : (double)project.TotalCompletedTasks / project.TotalNumberOfTasks * 100;
+
             return new projectViewModel
             {
                 ID = project.ID,
                 Name = project.ProjectName,
                 ClientName = project.client.Name,
                 PrimaryGoal = project.PrimaryGoal,
-                ProgressRate = project.ProgressRate,
+                ProgressRate = (int)result,
                 state = project.State,
                 DateCreated = project.CreatedAt.LocalDateTime,
                 Description = project.Description,

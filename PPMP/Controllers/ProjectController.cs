@@ -29,11 +29,6 @@ namespace PPMP.Controllers
             _ProjectDashboardModel = new ProjectDashboardModel(projectRepo);
         }
 
-        public async Task UpdateProjectState()
-        {
-            //TODO
-            //this function will eventually be Responsible for updatng the Data Base State of A Project
-        }
 
         [HttpGet("dashboard/{ID:guid}")]
         public async Task<IActionResult> Project([FromRoute] string ID)
@@ -76,9 +71,10 @@ namespace PPMP.Controllers
             {
                 Result.TotalNumberOfTasks += delta;
                 
-                Result.ProgressRate =   Result.TotalNumberOfTasks == 0
+                //REMOVE EVERYTHING CONCERNING PROGRESS RATE FROM DB (IT Will Now Be Calculated withing Project Model From both Set of totals)
+               /* Result.ProgressRate =   Result.TotalNumberOfTasks == 0
                                         ? 0
-                                        : Result.TotalCompletedTasks / Result.TotalNumberOfTasks;
+                                        : Result.TotalCompletedTasks / Result.TotalNumberOfTasks * 100; */
 
                 await _projectRepo.UpdateProject(Result);
             }
@@ -91,8 +87,7 @@ namespace PPMP.Controllers
            
             if(Result != null)
             {
-                Result.TotalNumberOfTasks += delta;
-                Result.ProgressRate = Result.TotalNumberOfTasks / Result.TotalCompletedTasks;
+                Result.TotalCompletedTasks += delta;
                 await _projectRepo.UpdateProject(Result);
             }
         }
@@ -139,6 +134,32 @@ namespace PPMP.Controllers
 
             return new OkResult();
 
+        }
+
+        [HttpPost("Update/Task", Name = "UpdateTask")]
+        public async Task<IActionResult> UpdateTask([FromBody]TaskUpdateModel taskUpdate)
+        {
+            var result = await _goalTaskRepo.GetByIdAsync(new Guid(taskUpdate.TaskID));
+            if(result.Completed == taskUpdate.Completed)
+            {
+                return new BadRequestObjectResult("Unecessary Call Setting Task State To it Current State"); 
+            }
+
+            result.Completed = taskUpdate.Completed;
+            await _goalTaskRepo.UpdateAsync(result);
+
+            string ProjectID = (await _subgoalRepo.GetByIdAsync(new Guid(taskUpdate.SubGoalID))).ProjectID.ToString();
+
+            if(taskUpdate.Completed == true)
+            {
+                await UpdateCompletedTasks(ProjectID, +1);
+            }
+            else
+            {
+                await UpdateCompletedTasks(ProjectID, -1);
+            }
+
+            return new OkResult(); 
         }
 
 

@@ -1,9 +1,136 @@
 @model GoalTask
 
+<style>
+    @@keyframes checkPop {
+        0%   { transform: scale(1); }
+        30%  { transform: scale(0.8); }
+        60%  { transform: scale(1.25); }
+        80%  { transform: scale(0.95); }
+        100% { transform: scale(1); }
+    }
+    @@keyframes checkPop-reverse {
+        0%   { transform: scale(1); }
+        30%  { transform: scale(1.2); }
+        60%  { transform: scale(0.85); }
+        100% { transform: scale(1); }
+    }
+    @@keyframes drawCheck {
+        0%   { stroke-dashoffset: 30; opacity: 0; }
+        40%  { opacity: 1; }
+        100% { stroke-dashoffset: 0; opacity: 1; }
+    }
+    @@keyframes eraseCheck {
+        0%   { stroke-dashoffset: 0; opacity: 1; }
+        100% { stroke-dashoffset: 30; opacity: 0; }
+    }
+
+    .task-checkbox svg .check-path {
+        stroke-dasharray: 30;
+        stroke-dashoffset: 30;
+        opacity: 0;
+    }
+    .task-checkbox.checked svg .check-path {
+        animation: drawCheck 0.35s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+    }
+    .task-checkbox.unchecked svg .check-path {
+        animation: eraseCheck 0.2s ease forwards;
+    }
+    .task-checkbox.pop {
+        animation: checkPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .task-checkbox.pop-reverse {
+        animation: checkPop-reverse 0.3s ease forwards;
+    }
+</style>
+
 <div class="flex items-center gap-3 p-3.5 px-5 hover:bg-slate-50 transition-colors group">
 
-    <span class="flex-grow text-sm text-black-600 font-medium">@Model.TaskGoal</span>
-    <div class="w-4.5 h-4.5 border-2 border-white-600 bg-green-600 rounded-full flex items-center justify-center text-white text-[10px]">
-        <i class="fa fa-check"></i>
-    </div>
+    <span class="flex-grow text-sm font-medium transition-all duration-300 task-label">
+        @Model.TaskGoal
+    </span>
+
+   <button
+    onclick="toggleTask(this)"
+    data-checked="@Model.Completed.ToString().ToLower()"
+    data-task-id="@Model.ID"
+    data-sub-goal-id="@Model.SubGoalID"
+    class="task-checkbox hover:cursor-pointer w-6 h-6 rounded-full border-2 border-gray-300 bg-white flex items-center justify-center flex-shrink-0 transition-colors duration-200 hover:border-green-400">
+
+    <svg viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5">
+        <path
+            class="check-path"
+            d="M1.5 6 L5.5 10 L12.5 1.5"
+            stroke="white"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+    </svg>
+</button>
 </div>
+<script>
+function applyCheckState(checkbox) {
+    const label = checkbox.closest('.group').querySelector('.task-label');
+    const isChecked = checkbox.dataset.checked === 'true';
+
+    checkbox.classList.remove('pop', 'pop-reverse', 'checked', 'unchecked');
+
+    if (isChecked) {
+        checkbox.style.background = '#22c55e';
+        checkbox.style.borderColor = '#22c55e';
+        checkbox.classList.add('checked');
+        label.classList.add('line-through', 'text-gray-400');
+    } else {
+        checkbox.style.background = '';
+        checkbox.style.borderColor = '';
+        label.classList.remove('line-through', 'text-gray-400');
+    }
+}
+
+function toggleTask(checkbox) {
+    const label = checkbox.closest('.group').querySelector('.task-label');
+    const isChecked = checkbox.dataset.checked === 'true';
+
+    checkbox.classList.remove('pop', 'pop-reverse', 'checked', 'unchecked');
+
+    if (isChecked) {
+        checkbox.dataset.checked = 'false';
+        void checkbox.offsetWidth;
+
+        checkbox.classList.add('pop-reverse', 'unchecked');
+        checkbox.style.background = '';
+        checkbox.style.borderColor = '';
+        checkbox.classList.add('border-gray-300');
+        label.classList.remove('line-through', 'text-gray-400');
+
+        setTimeout(() => checkbox.classList.remove('pop-reverse', 'unchecked'), 300);
+    } else {
+        checkbox.dataset.checked = 'true';
+        void checkbox.offsetWidth;
+
+        checkbox.classList.add('pop', 'checked');
+        checkbox.style.background = '#22c55e';
+        checkbox.style.borderColor = '#22c55e';
+        label.classList.add('line-through', 'text-gray-400');
+    }
+
+    $.ajax({
+        url: '/Project/Update/Task',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            taskID: checkbox.dataset.taskId,
+            completed: checkbox.dataset.checked === 'true',
+            subGoalID: checkbox.dataset.subGoalId
+        }),
+        error: function(xhr, status, err) {
+            console.error('Failed to update task:', err);
+        }
+    });
+}
+
+// Initialize state from Model.Completed on page load
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.task-checkbox').forEach(applyCheckState);
+});
+</script>

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace PPMP.Data
 {
+    //Represets A Developer users
     public class User : IdentityUser
     {
         public List<Client> Clients { get; set; }

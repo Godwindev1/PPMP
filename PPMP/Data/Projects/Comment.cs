@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using PPMP.Data;
 
+[Obsolete]
 public class Comment
 {
     [Required]
@@ -20,3 +21,5 @@ public class Comment
     public Client? client {get; set; }
     public User? Developer {get; set;}
 }
+
+

@@ -31,24 +31,19 @@ namespace PPMP.Data
             .HasForeignKey(x => x.stateTagID)
             .OnDelete(DeleteBehavior.Restrict);
         }
-        protected void DefineCommentsProperties(ModelBuilder builder)
+        protected void DefineChatProperties(ModelBuilder builder)
         {
-             //Comments
-            builder.Entity<Comment>().HasKey(x => x.CommentID);
-            builder.Entity<Comment>()
-            .HasOne(x => x.project)
-            .WithMany(x => x.Comments)
-            .HasForeignKey(x => x.ProjectID);
-            
-            builder.Entity<Comment>()
-            .HasOne(x => x.Developer)
-            .WithMany(x => x.Comments)
-            .HasForeignKey(x => x.AuthorDeveloperID);
+            builder.Entity<ChatRoom>().HasKey( x => x.Id);
+            builder.Entity<ChatRoom>().HasMany(x => x.Messages).WithOne(x => x.Room).HasForeignKey(x => x.RoomId);
 
-            builder.Entity<Comment>()
-            .HasOne(x => x.client)
-            .WithMany(x => x.Comments)
-            .HasForeignKey(x => x.AuthorClientID);
+            builder.Entity<ChatRoomMember>()
+            .HasKey(x => new { x.RoomId, x.UserId }); // composite PK
+
+            builder.Entity<ChatRoomMember>()
+            .HasOne(x => x.Room)
+            .WithMany(x => x.Members)
+            .HasForeignKey(x => x.RoomId);
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -119,7 +114,7 @@ namespace PPMP.Data
             .HasForeignKey<SessionPage>(x => x.CLientID);
 
             DefineUIstateProperties(builder);
-            //DefineCommentsProperties(builder);
+            DefineChatProperties(builder);
             base.OnModelCreating(builder);
         }
 
@@ -131,13 +126,10 @@ namespace PPMP.Data
         public DbSet<Subgoal> subgoals {get; set; }
         public DbSet<StateTag> stateTags {get; set;}
         public DbSet<SessionPage> Sessions {get; set; }
-
         public DbSet<GoalTask> tasks {get; set; }
 
-        //TODO; REVISIONS
-        //private DbSet<Comment> comments {get; set;}
-        //private DbSet<AnchorNode> anchorNodes {get; set; }
-        //private DbSet<CommentAnchor> commentAnchors {get; set; }
-
+        public DbSet<ChatRoomMember> ChatRoomMembers {get; set;}
+        public DbSet<ChatRoom> ChatRooms {get; set; }
+        public DbSet<Message> Messages {get; set; }
     }
 }

@@ -1,3 +1,5 @@
+
+[Obsolete]
 public class CommentAnchor
 {
     public Guid CommentID {get; set;}

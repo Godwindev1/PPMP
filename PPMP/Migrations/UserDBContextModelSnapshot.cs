@@ -22,6 +22,49 @@ namespace PPMP.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("ChatRoom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("CreatedByUserType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChatRooms");
+                });
+
+            modelBuilder.Entity("ChatRoomMember", b =>
+                {
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserType")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoomId", "UserId");
+
+                    b.ToTable("ChatRoomMembers");
+                });
+
             modelBuilder.Entity("Comment", b =>
                 {
                     b.Property<Guid>("CommentID")
@@ -70,6 +113,9 @@ namespace PPMP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("Completed")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<Guid>("SubGoalID")
                         .HasColumnType("char(36)");
 
@@ -82,6 +128,41 @@ namespace PPMP.Migrations
                     b.HasIndex("SubGoalID");
 
                     b.ToTable("tasks");
+                });
+
+            modelBuilder.Entity("Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("EditedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("SenderUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("SenderUserType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -383,6 +464,12 @@ namespace PPMP.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<int>("TotalCompletedTasks")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalNumberOfTasks")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
 
                     b.HasIndex("ClientID");
@@ -469,6 +556,9 @@ namespace PPMP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTimeOffset>("DueDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Goal")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -486,6 +576,17 @@ namespace PPMP.Migrations
                     b.HasIndex("stateTagID");
 
                     b.ToTable("subgoals");
+                });
+
+            modelBuilder.Entity("ChatRoomMember", b =>
+                {
+                    b.HasOne("ChatRoom", "Room")
+                        .WithMany("Members")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Comment", b =>
@@ -520,6 +621,17 @@ namespace PPMP.Migrations
                         .IsRequired();
 
                     b.Navigation("subgoal");
+                });
+
+            modelBuilder.Entity("Message", b =>
+                {
+                    b.HasOne("ChatRoom", "Room")
+                        .WithMany("Messages")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -685,6 +797,13 @@ namespace PPMP.Migrations
                     b.Navigation("project");
 
                     b.Navigation("state");
+                });
+
+            modelBuilder.Entity("ChatRoom", b =>
+                {
+                    b.Navigation("Members");
+
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("PPMP.Data.Client", b =>

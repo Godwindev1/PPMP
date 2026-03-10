@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 //TODO REVISE COMMENTS, CHATS AAND ANCHORS
+[Obsolete]
 public class AnchorNode
 {
     [Required]

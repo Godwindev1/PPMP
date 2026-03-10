@@ -32,6 +32,7 @@ namespace PPMP
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSignalR();
 
             builder.Services.AddIdentity<User, Role>(options =>
             {

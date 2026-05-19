@@ -1,7 +1,7 @@
-@model Subgoal
+@model SubgoalDto
 
 @{
-    var baseColor = Model.state.HexColor;
+    var baseColor = Model.StateTagHexColor;
     var bgColor = ColorHelper.LightenColor(baseColor, 0.88);
     var borderColor = ColorHelper.LightenColor(baseColor, 0.5);
     var TextColor = ColorHelper.DarkenColor(baseColor, 0.1);
@@ -75,7 +75,7 @@
 </style>
 
 <div class="task-group active border border-slate-200 rounded-lg overflow-hidden bg-white"
-     data-subgoal-id="@Model.ID"
+     data-subgoal-id="@Model.Id"
     >
 
     <div class="group-header flex justify-between items-center p-4 px-5 bg-white cursor-pointer"
@@ -93,7 +93,7 @@
                          text-[11px] font-bold rounded-full border uppercase"
                   style="background-color: @bgColor; border-color: @borderColor; color: @TextColor;">
                 <span class="w-1.5 h-1.5 bg-current rounded-full"></span>
-                @Model.state.TagName
+                @Model.StateTagName
             </span>
 
             <!-- ── Confirm Bar (hidden until delete is clicked) ── -->
@@ -139,8 +139,8 @@
 
         <div class="add-task-row">
             <form asp-route="AddTasksToGoal" method="post" onsubmit="return false;">
-                <input hidden name="SubgoalID" value="@Model.ID" />
-                <input hidden name="ProjectID" value="@Model.ProjectID" />
+                <input hidden name="SubgoalID" value="@Model.Id" />
+                <input hidden name="ProjectID" value="@Model.ProjectId" />
                 <input type="text" name="TaskGoal"
                        placeholder="Add a task and press Enter"
                        class="w-full px-4 py-3 text-sm border-none outline-none bg-white"

@@ -40,7 +40,7 @@
 
         <div class="flex-grow overflow-y-auto px-10 pb-10">
             <div class="max-w-[900px] space-y-4">
-                @foreach(Subgoal Subgoal in Model.subgoals )
+                @foreach(SubgoalDto Subgoal in Model.subgoals )
                 {
                     <partial name="_SubgoalRecord" model="Subgoal" />
                 }

@@ -1,4 +1,4 @@
-@model GoalTask
+@model GoalTaskDto
 
 <style>
     @@keyframes checkPop {
@@ -95,8 +95,8 @@
     <!-- Delete Button -->
     <button
         onclick="deleteTask(this)"
-        data-task-id="@Model.ID"
-        data-sub-goal-id="@Model.SubGoalID"
+        data-task-id="@Model.Id"
+        data-sub-goal-id="@Model.SubGoalId"
         title="Delete task"
         class="delete-btn w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 hover:bg-red-50 hover:border hover:border-red-200 text-gray-300 hover:text-red-500 hover:cursor-pointer transition-colors duration-150">
         <svg viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-4">
@@ -131,8 +131,8 @@
     <button
         onclick="toggleTask(this)"
         data-checked="@Model.Completed.ToString().ToLower()"
-        data-task-id="@Model.ID"
-        data-sub-goal-id="@Model.SubGoalID"
+        data-task-id="@Model.Id"
+        data-sub-goal-id="@Model.SubGoalId"
         class="task-checkbox hover:cursor-pointer w-6 h-6 rounded-full border-2 border-gray-300 bg-white flex items-center justify-center flex-shrink-0 transition-colors duration-200 hover:border-green-400">
         <svg viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5">
             <path

@@ -1,3 +1,5 @@
+//namespace PPMP.Shared.DTOs;
+
 public class SubgoalDto
 {
     public Guid Id { get; set; }
@@ -7,4 +9,6 @@ public class SubgoalDto
     public string? StateTagName { get; set; }
     public string? StateTagHexColor { get; set; }
     public DateTimeOffset DueDate { get; set; }
+    public List<GoalTaskDto> Tasks { get; set; } = [];
+    public List<ProjectModificationDto> Modifications { get; set; } = [];
 }

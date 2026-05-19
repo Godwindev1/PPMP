@@ -1,4 +1,4 @@
-namespace Services
+namespace PPMP.API.Services
 {
     public interface IStartupOperation
     {

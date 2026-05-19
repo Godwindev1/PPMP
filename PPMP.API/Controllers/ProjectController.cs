@@ -1,12 +1,9 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PPMP.Data;
-using PPMP.Models;
-using PPMP.Repo;
+using PPMP.API.Repo;
+using PPMP.API.Models;
 
-namespace PPMP.Controllers
+namespace PPMP.API.Controllers
 {
     [Authorize(policy: "FullAccessPolicy")]
     [Route("Project")]

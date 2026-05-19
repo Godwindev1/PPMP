@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PPMP.Models;
-using PPMP.Repo;
+using PPMP.Shared.Models;
+using PPMP.API.Repo;
 
-namespace PPMP.Controllers
+namespace PPMP.API.Controllers
 {
     public class ClientController : Controller
     {

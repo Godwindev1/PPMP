@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace PPMP.Models
+namespace PPMP.Shared.Models
 {
     public class ClientLoginViewModel
     {

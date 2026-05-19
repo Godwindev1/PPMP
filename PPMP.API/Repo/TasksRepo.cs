@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using PPMP.Data;
+using PPMP.API.Data;
 
-namespace PPMP.Repo
+namespace PPMP.API.Repo
 {
     public class GoalTaskRepo
     {

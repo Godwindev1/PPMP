@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PPMP.Data;
+using PPMP.API.Data;
 
 #nullable disable
 
-namespace PPMP.Migrations
+namespace PPMP.API.Migrations
 {
     [DbContext(typeof(UserDBContext))]
     partial class UserDBContextModelSnapshot : ModelSnapshot
@@ -190,7 +190,7 @@ namespace PPMP.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PPMP.Data.Client", b =>
+            modelBuilder.Entity("PPMP.API.Data.Client", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -237,7 +237,7 @@ namespace PPMP.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("PPMP.Data.ClientRole", b =>
+            modelBuilder.Entity("PPMP.API.Data.ClientRole", b =>
                 {
                     b.Property<Guid>("ClientID")
                         .HasColumnType("char(36)");
@@ -255,7 +255,7 @@ namespace PPMP.Migrations
                     b.ToTable("ClientRoles");
                 });
 
-            modelBuilder.Entity("PPMP.Data.Role", b =>
+            modelBuilder.Entity("PPMP.API.Data.Role", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -281,7 +281,7 @@ namespace PPMP.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("PPMP.Data.User", b =>
+            modelBuilder.Entity("PPMP.API.Data.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -490,7 +490,7 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("Comment", b =>
                 {
-                    b.HasOne("PPMP.Data.User", "Developer")
+                    b.HasOne("PPMP.API.Data.User", "Developer")
                         .WithMany("Comments")
                         .HasForeignKey("DeveloperId");
 
@@ -500,7 +500,7 @@ namespace PPMP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PPMP.Data.Client", "client")
+                    b.HasOne("PPMP.API.Data.Client", "client")
                         .WithMany("Comments")
                         .HasForeignKey("clientId");
 
@@ -524,7 +524,7 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("PPMP.Data.Role", null)
+                    b.HasOne("PPMP.API.Data.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -533,7 +533,7 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PPMP.Data.User", null)
+                    b.HasOne("PPMP.API.Data.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -542,7 +542,7 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PPMP.Data.User", null)
+                    b.HasOne("PPMP.API.Data.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -551,13 +551,13 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("PPMP.Data.Role", null)
+                    b.HasOne("PPMP.API.Data.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PPMP.Data.User", null)
+                    b.HasOne("PPMP.API.Data.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -566,16 +566,16 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PPMP.Data.User", null)
+                    b.HasOne("PPMP.API.Data.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PPMP.Data.Client", b =>
+            modelBuilder.Entity("PPMP.API.Data.Client", b =>
                 {
-                    b.HasOne("PPMP.Data.User", "User")
+                    b.HasOne("PPMP.API.Data.User", "User")
                         .WithMany("Clients")
                         .HasForeignKey("DeveloperLinkId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -584,15 +584,15 @@ namespace PPMP.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PPMP.Data.ClientRole", b =>
+            modelBuilder.Entity("PPMP.API.Data.ClientRole", b =>
                 {
-                    b.HasOne("PPMP.Data.Client", "client")
+                    b.HasOne("PPMP.API.Data.Client", "client")
                         .WithOne("clientRole")
-                        .HasForeignKey("PPMP.Data.ClientRole", "ClientID")
+                        .HasForeignKey("PPMP.API.Data.ClientRole", "ClientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PPMP.Data.Role", "Role")
+                    b.HasOne("PPMP.API.Data.Role", "Role")
                         .WithMany("clientRoles")
                         .HasForeignKey("RoleID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -605,7 +605,7 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("Project", b =>
                 {
-                    b.HasOne("PPMP.Data.Client", "client")
+                    b.HasOne("PPMP.API.Data.Client", "client")
                         .WithMany("projects")
                         .HasForeignKey("ClientID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -617,7 +617,7 @@ namespace PPMP.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PPMP.Data.User", "Developer")
+                    b.HasOne("PPMP.API.Data.User", "Developer")
                         .WithMany("projects")
                         .HasForeignKey("DeveloperID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -651,13 +651,13 @@ namespace PPMP.Migrations
 
             modelBuilder.Entity("SessionPage", b =>
                 {
-                    b.HasOne("PPMP.Data.Client", "client")
+                    b.HasOne("PPMP.API.Data.Client", "client")
                         .WithOne("Session")
                         .HasForeignKey("SessionPage", "CLientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PPMP.Data.User", "Developer")
+                    b.HasOne("PPMP.API.Data.User", "Developer")
                         .WithMany("Sessions")
                         .HasForeignKey("DeveloperID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -687,7 +687,7 @@ namespace PPMP.Migrations
                     b.Navigation("state");
                 });
 
-            modelBuilder.Entity("PPMP.Data.Client", b =>
+            modelBuilder.Entity("PPMP.API.Data.Client", b =>
                 {
                     b.Navigation("Comments");
 
@@ -699,12 +699,12 @@ namespace PPMP.Migrations
                     b.Navigation("projects");
                 });
 
-            modelBuilder.Entity("PPMP.Data.Role", b =>
+            modelBuilder.Entity("PPMP.API.Data.Role", b =>
                 {
                     b.Navigation("clientRoles");
                 });
 
-            modelBuilder.Entity("PPMP.Data.User", b =>
+            modelBuilder.Entity("PPMP.API.Data.User", b =>
                 {
                     b.Navigation("Clients");
 

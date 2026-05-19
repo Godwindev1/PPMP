@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using PPMP.Data;
+using PPMP.API.Data;
 
 public class Project
 {

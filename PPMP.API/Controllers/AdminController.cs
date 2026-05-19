@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PPMP.Data;
-using PPMP.Models;
-using PPMP.Repo;
-using System.Net;
+using PPMP.API.Data;
+
+using PPMP.API.Repo;
+using PPMP.Shared.Models;
 using System.Security.Claims;
 
-namespace PPMP.Controllers
+
+
+namespace PPMP.API.Controllers
 {
     //Changed Routing For Admin  controller CHeck For Linkage Errors In Pages
     [Authorize(policy: "FullAccessPolicy")]

@@ -1,5 +1,5 @@
 
-namespace Services
+namespace PPMP.API.Services
 {
 public class StartupOperationsHostedService : IHostedService
 {

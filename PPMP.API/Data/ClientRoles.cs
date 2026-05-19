@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace PPMP.Data
+namespace PPMP.API.Data
 {
     public class ClientRole
     {

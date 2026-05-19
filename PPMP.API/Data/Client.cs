@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace PPMP.Data
+namespace PPMP.API.Data
 {
 public class Client
 {

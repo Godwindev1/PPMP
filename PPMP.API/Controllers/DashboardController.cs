@@ -2,11 +2,12 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PPMP.Data;
-using PPMP.Models;
-using PPMP.Repo;
+using PPMP.API.Data;
+using PPMP.Shared.Models;
+using PPMP.API.Repo;
+using PPMP.API.Models;
 
-namespace PPMP.Controllers
+namespace PPMP.API.Controllers
 {
     [Route("Dashboard")]
     public class DashboardController : Controller

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PPMP.Migrations
+namespace PPMP.API.Migrations
 {
     /// <inheritdoc />
     public partial class mydb : Migration

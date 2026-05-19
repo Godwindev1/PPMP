@@ -1,4 +1,4 @@
-namespace PPMP.Models
+namespace PPMP.Shared.Models
 {
     public class ErrorViewModel
     {

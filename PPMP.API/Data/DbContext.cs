@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace PPMP.Data
+using PPMP.API.Data;
+
+namespace PPMP.API.Data
 {
     public class UserDBContext : IdentityDbContext<User, Role, string>
     {

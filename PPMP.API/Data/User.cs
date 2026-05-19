@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.ObjectModel;
 
-namespace PPMP.Data
+namespace PPMP.API.Data
 {
     public class User : IdentityUser
     {

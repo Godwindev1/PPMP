@@ -1,7 +1,7 @@
 
-using PPMP.Repo;
+using PPMP.API.Repo;
 
-namespace Services.Operations
+namespace PPMP.API.Services.Operations
 {
     public class SeedStateTags : IStartupOperation
     {

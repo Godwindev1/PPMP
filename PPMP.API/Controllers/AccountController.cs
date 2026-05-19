@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using PPMP.Data;
-using PPMP.Models;
+using PPMP.API.Data;
+using PPMP.Shared.Models;
 using System.Net;
 using System.Security.Claims;
 
-namespace PPMP.Controllers
+
+namespace PPMP.API.Controllers
 {
 
     public class AccountController : Controller

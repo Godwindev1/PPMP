@@ -1,0 +1,211 @@
+@model Subgoal
+
+@{
+    var baseColor = Model.state.HexColor;
+    var bgColor = ColorHelper.LightenColor(baseColor, 0.88);
+    var borderColor = ColorHelper.LightenColor(baseColor, 0.5);
+    var TextColor = ColorHelper.DarkenColor(baseColor, 0.1);
+}
+
+<style>
+    @@keyframes trashLidPop {
+        0%   { transform: rotate(0deg) translateY(0px); }
+        30%  { transform: rotate(-25deg) translateY(-3px); }
+        60%  { transform: rotate(10deg) translateY(-1px); }
+        100% { transform: rotate(0deg) translateY(0px); }
+    }
+    @@keyframes deletePulse {
+        0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.35); }
+        70%  { box-shadow: 0 0 0 7px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    @@keyframes confirmSlideIn {
+        0%   { opacity: 0; transform: translateX(12px) scale(0.96); }
+        100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    @@keyframes confirmSlideOut {
+        0%   { opacity: 1; transform: translateX(0) scale(1); }
+        100% { opacity: 0; transform: translateX(12px) scale(0.96); }
+    }
+    @@keyframes groupCollapse {
+        0%   { opacity: 1; transform: translateY(0); max-height: 600px; }
+        30%  { opacity: 0.4; transform: translateY(-4px); }
+        100% { opacity: 0; transform: translateY(-8px); max-height: 0; margin: 0; padding: 0; }
+    }
+
+    /* Delete button — hidden until header is hovered */
+    .subgoal-delete-btn {
+        opacity: 0;
+        transform: scale(0.75);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+    }
+    .group-header:hover .subgoal-delete-btn,
+    .subgoal-delete-btn.confirming {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+    .subgoal-delete-btn:hover .trash-lid {
+        animation: trashLidPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        transform-origin: left center;
+    }
+    .subgoal-delete-btn:hover {
+        animation: deletePulse 0.5s ease forwards;
+    }
+
+    /* Inline confirm bar */
+    .confirm-bar {
+        display: none;
+        animation: confirmSlideIn 0.25s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+    }
+    .confirm-bar.visible {
+        display: flex;
+    }
+    .confirm-bar.hiding {
+        animation: confirmSlideOut 0.2s ease forwards;
+    }
+
+    /* Group delete collapse */
+    .task-group.deleting {
+        animation: groupCollapse 0.45s ease forwards;
+        overflow: hidden;
+        pointer-events: none;
+    }
+</style>
+
+<div class="task-group active border border-slate-200 rounded-lg overflow-hidden bg-white"
+     data-subgoal-id="@Model.ID"
+    >
+
+    <div class="group-header flex justify-between items-center p-4 px-5 bg-white cursor-pointer"
+         onclick="handleHeaderClick(event, this)">
+
+        <div class="flex flex-col gap-0.5 h-full">
+            <span class="text-sm font-semibold text-slate-800 uppercase tracking-tight">@Model.Goal</span>
+            <span class="text-[0.8rem] font-medium text-slate-800 tracking-tight">Due: @Model.DueDate.ToLocalTime().ToString("g")</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+
+            <!-- Status Tag -->
+            <span class="inline-flex items-center gap-1.5 px-3 py-1
+                         text-[11px] font-bold rounded-full border uppercase"
+                  style="background-color: @bgColor; border-color: @borderColor; color: @TextColor;">
+                <span class="w-1.5 h-1.5 bg-current rounded-full"></span>
+                @Model.state.TagName
+            </span>
+
+            <!-- ── Confirm Bar (hidden until delete is clicked) ── -->
+            <div class="confirm-bar items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5">
+                <span class="text-[11px] font-semibold text-black whitespace-nowrap">Delete subgoal?</span>
+                <button onclick="confirmDelete(event, this)"
+                        class="px-2.5 py-1 text-[11px] font-bold bg-red-500 hover:bg-red-600 text-red-600 rounded-md transition-colors duration-150 cursor-pointer">
+                    Yes, delete
+                </button>
+                <button onclick="cancelDelete(event, this)"
+                        class="px-2.5 py-1 text-[11px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors duration-150 cursor-pointer">
+                    Cancel
+                </button>
+            </div>
+
+            <!-- ── Delete Icon Button ── -->
+            <button onclick="requestDelete(event, this)"
+                    title="Delete subgoal"
+                    class="subgoal-delete-btn w-7 h-7 rounded-full flex items-center justify-center
+                           text-gray-300 hover:text-red-500 hover:bg-red-50 hover:border hover:border-red-200
+                           transition-colors duration-150 cursor-pointer">
+                <svg viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-4">
+                    <path class="trash-lid"
+                          d="M1 4h14M5.5 4V2.5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V4"
+                          stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 4l1 11a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-11"
+                          stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6.5 7.5v5M9.5 7.5v5"
+                          stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+            </button>
+
+            <i class="fa fa-chevron-up text-slate-400 text-xs transition-transform duration-200 chevron-icon"></i>
+        </div>
+    </div>
+
+    <div class="task-list block border-t border-slate-200 divide-y divide-slate-100">
+
+        @foreach (var task in Model.Tasks)
+        {
+            <partial name="_Task" model="task" />
+        }
+
+        <div class="add-task-row">
+            <form asp-route="AddTasksToGoal" method="post" onsubmit="return false;">
+                <input hidden name="SubgoalID" value="@Model.ID" />
+                <input hidden name="ProjectID" value="@Model.ProjectID" />
+                <input type="text" name="TaskGoal"
+                       placeholder="Add a task and press Enter"
+                       class="w-full px-4 py-3 text-sm border-none outline-none bg-white"
+                       onkeydown="submitTask(event, this)" />
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// Prevent header toggle when clicking inside the action buttons area
+function handleHeaderClick(event, header) {
+    if (event.target.closest('.confirm-bar') || event.target.closest('.subgoal-delete-btn')) return;
+    toggleGroup(header);
+}
+
+// Step 1: Show confirm bar, keep delete btn visible
+function requestDelete(event, btn) {
+    event.stopPropagation();
+    const header = btn.closest('.group-header');
+    const confirmBar = header.querySelector('.confirm-bar');
+
+    btn.classList.add('confirming');
+    confirmBar.classList.remove('hiding');
+    confirmBar.classList.add('visible');
+}
+
+// Step 2a: User confirms — animate group out then delete
+function confirmDelete(event, btn) {
+    event.stopPropagation();
+    const group = btn.closest('.task-group');
+    const subGoalId = group.dataset.subgoalId;
+
+    group.classList.add('deleting');
+
+    group.addEventListener('animationend', () => group.remove(), { once: true });
+
+    // TODO: Implement your delete logic here
+    $.ajax({
+        url: '/Project/Delete/goal',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            subGoalID: subGoalId
+        }),
+        error: function(xhr, status, err) {
+            // Rollback on failure
+            group.classList.remove('deleting');
+            console.error('Failed to delete subgoal:', err);
+        }
+    });
+}
+
+// Step 2b: User cancels — slide confirm bar back out
+function cancelDelete(event, btn) {
+    event.stopPropagation();
+    const header = btn.closest('.group-header');
+    const confirmBar = header.querySelector('.confirm-bar');
+    const deleteBtn = header.querySelector('.subgoal-delete-btn');
+
+    confirmBar.classList.add('hiding');
+    confirmBar.addEventListener('animationend', () => {
+        confirmBar.classList.remove('visible', 'hiding');
+        deleteBtn.classList.remove('confirming');
+    }, { once: true });
+}
+</script>

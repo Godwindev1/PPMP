@@ -1,0 +1,27 @@
+@model ClientRowViewModel
+
+<tr class="hover:bg-gray-50 transition-colors">
+    <td class="px-4 py-3 text-left text-[13px] font-medium text-gray-700">@Model.Id</td>
+
+    <td class="px-4 py-3 text-left text-[13px] font-normal text-gray-700">
+        @Model.ClientName
+    </td>
+
+    <td class="px-4 py-3 text-left text-[13px] font-normal text-gray-700">
+        @Model.ProjectsCount
+    </td>
+
+    <td class="px-4 py-3 text-left text-[13px] font-normal text-gray-700">
+        @Model.CreatedDate.ToString("yyyy MM dd")
+    </td>
+
+    <!-- TODO: This Is PCR UI Its Meant to Be A Bar Graphic Showing A Percentage -->
+    <td class="px-4 py-3 text-left text-[13px] font-normal text-gray-700">
+        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[13px] font-medium
+            @(Model.Status == "Active"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-700")">
+            @Model.Status
+        </span>
+    </td>
+</tr>

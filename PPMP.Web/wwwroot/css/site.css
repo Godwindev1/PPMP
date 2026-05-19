@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+html {
+  font-family: 'Roboto', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+:root {
+  font-family: 'Robot', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.bg-generic {
+  background-image: url('../images/genericBG.jpg')
+}
+
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes growBar {
+  from {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+
+  to {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+.bar-animate {
+  animation: growBar 0.8s ease-out;
+}
+
+.sidebar-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+.slideButtonLeft {
+  position: absolute;
+  transform: translateX(calc(-100% + 20px));
+}
+
+@keyframes loading-bar {
+    0%   { transform: translateX(-100%); }
+    50%  { transform: translateX(100%); }
+    100% { transform: translateX(100%); }
+}
+.animate-loading-bar {
+    animation: loading-bar 1.2s ease-in-out infinite;
+}

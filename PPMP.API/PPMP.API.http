@@ -1,0 +1,6 @@
+@PPMP.API_HostAddress = http://localhost:5172
+
+GET {{PPMP.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
